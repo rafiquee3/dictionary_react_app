@@ -12,6 +12,28 @@ const Button = styled.button`
     padding: 15px;
     color: white;
 `
+const CloseButton = styled.button`
+    display: flex;
+    background: transparent;
+    border: none;
+    color: white;
+`
+const Form = styled.form`
+    display: flex;
+    flex-direction: column;
+    background: #584894;
+    border-radius: 4px;
+    border-color: #584894;
+    padding: 15px;
+    color: white;
+`
+const Input = styled.input`
+    background: 'white';
+    border-radius: 4px;
+    border-color: #584894;
+    padding: 15px;
+    color: black;
+`
 
 const LoginForm = () => {
     const [login, setLogin] = useState('');
@@ -41,14 +63,14 @@ const LoginForm = () => {
     }
     const toggleSubmit = async event => {
         event.preventDefault();
-        console.log(login)
+ 
         const {data, status} = await request.post(
             '/users/find',
             {login, password}
         );
         if(status === 200) {
             console.log(data);
-            setUser('test');
+            setUser(data.login);
             toggleLoginForm();
             clearInputField();
         }
@@ -78,19 +100,16 @@ const LoginForm = () => {
         <>
         {setButtonLabel}
         <Modal  isShowing={isLoginFormShowed}>
-            <form ref={modalRef} onSubmit={toggleSubmit} method="post">
-                
+            <Form ref={modalRef} onSubmit={toggleSubmit} method="post">       
+                <CloseButton onClick={toggleLoginForm}>X</CloseButton>
                 {validateMessage}
-                <div className="form-group">
-                <input type="text" placeholder="Username" value={login} onChange={loginHandler}/>
-                </div>
-                <div className="form-group">
-                <input type="password" placeholder="Password" value={password} onChange={passwordHandler}/>
-                </div>
-                <div className="form-group">
-                <input type="submit" value="Login" />
-                </div>
-          </form>
+                
+                <Input type="text" placeholder="Username" value={login} onChange={loginHandler}/>
+                <Input type="password" placeholder="Password" value={password} onChange={passwordHandler}/>
+
+                <Button type="submit" value="Login" bgcolor="#9583DB">Login</Button>
+          
+          </Form>
         </Modal>
         </>
     )

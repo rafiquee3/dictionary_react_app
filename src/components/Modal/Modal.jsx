@@ -33,14 +33,7 @@ const ModalContent = styled.div`
     max-width: 500px;
     width: 80%;
 `
-const ModalButton = styled.button`
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: #000;
-    cursor: pointer;
-    border: none;
-    background: transparent;
-`
+
 const Modal = ({ isShowing, children }) =>
   isShowing
     ? ReactDOM.createPortal(
