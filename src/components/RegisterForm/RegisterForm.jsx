@@ -25,6 +25,9 @@ const Input = styled.input`
     padding: 15px;
     color: black;
 `
+const Error = styled.div`
+    color: red;
+`
 
 const RegisterForm = () => {
     const [login, setLogin] = useState('');
@@ -74,12 +77,17 @@ const RegisterForm = () => {
             <Form onSubmit={toggleSubmit} method="post">
                 
                 <Input type="text" placeholder="Username" value={login} onChange={loginHandler}/>
-                {errorLogin}
+                    <Error>
+                        {errorLogin}
+                    </Error>
                 <Input type="password" placeholder="Password" value={password} onChange={passwordHandler}/>
-                {errorPassword}
+                    <Error>
+                        {errorPassword}
+                    </Error>      
                 <Button type="submit" value="Login" bgcolor="#9583DB">Sign in</Button>
-                {otherErrors}
-
+                     <Error>
+                        {otherErrors}
+                    </Error>
             </Form>
         </>
     )

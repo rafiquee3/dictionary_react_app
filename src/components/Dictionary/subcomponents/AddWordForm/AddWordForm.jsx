@@ -1,8 +1,8 @@
 import React, { useContext, useRef, useState, useEffect } from "react";
-import request from "../../helpers/request";
-import Modal from "../Modal/Modal";
-import useModal from "../Modal/useModal";
-import { StoreContext } from "../../store/StoreProvider";
+import request from '../../../../helpers/request'
+import Modal from "../../../Modal/Modal";
+import useModal from "../../../Modal/useModal";
+import { StoreContext } from "../../../../store/StoreProvider";
 import styled, { css } from 'styled-components';
 
 const Button = styled.button`
@@ -10,7 +10,7 @@ const Button = styled.button`
     border-radius: 4px;
     border-color: #584894;
     padding: 15px;
-    color: white;
+    color: black;
 `
 const CloseButton = styled.button`
     display: block;
@@ -36,42 +36,40 @@ const Input = styled.input`
     color: black;
 `
 
-const LoginForm = () => {
-    const [login, setLogin] = useState('');
-    const [password, setPassword] = useState('');
+const AddWordForm = () => {
+    const [word, setWord] = useState('');
+    const [translation, setTranslation] = useState('');
     const [validateMessage, setValidateMessage] = useState('');
-    const {isShowing: isLoginFormShowed, toggle: toggleLoginForm} = useModal();
+    const {isShowing: iswordFormShowed, toggle: toggleWordForm} = useModal();
     const {user, setUser,  words, setWords} = useContext(StoreContext);
     const modalRef = useRef(null);
 
-    const loginHandler = event => {
-        setLogin(event.target.value);
+    const wordHandler = event => {
+        setWord(event.target.value);
     }
     const toggleLogout = event => {
         setUser(null);
         setWords(null);
     }
-    const passwordHandler = event => {
-        setPassword(event.target.value);
+    const translationHandler = event => {
+        setTranslation(event.target.value);
     }
     const clearInputField = () => {
-        setLogin('');
-        setPassword('');
+        setWord('');
+        setTranslation('');
         setValidateMessage('');
     }
     const openOrClosedModal = () => {
         clearInputField();
-        toggleLoginForm();
+        toggleWordForm();
     }
-    const fetchDataUser = async (login) => {
-        console.log(login)
+    const getNewListOfWords = async (collectionName) => {
         const {data, status} = await request.post(
             '/words/',
-            {collection: login}
+            {collection: collectionName}
         );
         if(status === 200) {
             setWords(data)
-            console.log(data)
         }
         if(data.message) {
             setValidateMessage(data.message);
@@ -79,30 +77,29 @@ const LoginForm = () => {
     }
     const toggleSubmit = async (event) => {
         event.preventDefault();
-        console.log(login)
+        const collectionName = user;
+
         const {data, status} = await request.post(
-            '/users/find',
-            {login, password}
+            '/words/add',
+            {word, translation, collection: collectionName}
         );
         if(status === 200) {
-            console.log(data);
-            setUser(data.login);
-            await fetchDataUser(login);
-            toggleLoginForm();
+            console.log(data)
+            toggleWordForm();
             clearInputField();
+            getNewListOfWords(collectionName);
         }
         if(data.message) {
             setValidateMessage(data.message);
         }
     }
 
-    //click outside loginform close component 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            console.log('capturing')
+
           if (modalRef.current && !modalRef.current.contains(event.target)) {
-            if(!login && !password) {
-            console.log('poza')
+            if(!word && !translation) {
+
             openOrClosedModal();
             }
           }
@@ -111,7 +108,7 @@ const LoginForm = () => {
         return () => {
           document.removeEventListener('click', handleClickOutside, true); // 3th arg listen on capturing phase instead off bubbling phase
         };
-      }, [ toggleLoginForm ]);
+      }, [ toggleWordForm ]);
 
     const handleKeypress = e => {
     
@@ -119,24 +116,33 @@ const LoginForm = () => {
         toggleSubmit(e);
       }
     };
-    const setButtonLabel = Boolean(user) ? (<Button onClick={toggleLogout} bgcolor="#9583DB">Wyloguj</Button>) : (<Button onClick={openOrClosedModal} bgcolor="#9583DB">Zaloguj sie</Button>);
-    
+
+    const errorWord = typeof validateMessage !== 'string' ? validateMessage
+    .filter(message => message.field === "word")
+    .map(message => <p key={message.error}>{message.field}: {message.error}</p>) : '';
+
+    const errorTranslation = typeof validateMessage !== 'string' ? validateMessage
+    .filter(message => message.field === "translation")
+    .map(message => <p key={message.error}>{message.field}: {message.error}</p>) : '';
+
+    const otherErrors = typeof validateMessage !== 'string' ? '' : validateMessage;
+
     return (
         <>
-        {setButtonLabel}
-        <Modal  isShowing={isLoginFormShowed}>
+        <Button onClick={openOrClosedModal} bgcolor="#9583DB">New word</Button>
+        <Modal  isShowing={iswordFormShowed}>
             <Form ref={modalRef} onSubmit={toggleSubmit} method="post" onKeyPress={e => handleKeypress(e)}>       
                 <CloseButton onClick={openOrClosedModal}>X</CloseButton>
-                {validateMessage}
                 
-                <Input type="text" placeholder="Username" value={login} onChange={loginHandler}/>
-                <Input type="password" placeholder="Password" value={password} onChange={passwordHandler}/>
-
-                <Button type="submit" value="Login" bgcolor="#584894">Login</Button>
-          
-          </Form>
+                <Input type="text" placeholder="word" value={word} onChange={wordHandler}/>
+                {errorWord}
+                <Input type="translation" placeholder="translation" value={translation} onChange={translationHandler}/>
+                {errorTranslation}
+                <Button type="submit" value="word" bgcolor="#584894">word</Button>
+                {otherErrors}
+        </Form>
         </Modal>
         </>
     )
 }
-export default LoginForm;
+export default AddWordForm;

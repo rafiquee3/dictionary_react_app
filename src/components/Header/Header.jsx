@@ -1,10 +1,12 @@
 import React from "react";
+import AddWordForm from "../Dictionary/subcomponents/AddWordForm/AddWordForm";
 import LoginForm from "../LoginForm/LoginForm";
 import styled, { css } from 'styled-components';
 import Modal from "../Modal/Modal";
 import useModal from "../Modal/useModal";
 
 const Wrapper = styled.header`
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -24,6 +26,7 @@ const Header = () => {
         <>
             <Wrapper>
                 <p>Dictionary</p>
+                <AddWordForm />
                 <LoginForm />
             </Wrapper>
         </>
