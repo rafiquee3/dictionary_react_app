@@ -2,8 +2,6 @@ import React from "react";
 import AddWordForm from "../Dictionary/subcomponents/AddWordForm/AddWordForm";
 import LoginForm from "../LoginForm/LoginForm";
 import styled, { css } from 'styled-components';
-import Modal from "../Modal/Modal";
-import useModal from "../Modal/useModal";
 
 const Wrapper = styled.header`
     position: fixed;

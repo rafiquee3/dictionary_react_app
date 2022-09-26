@@ -60,8 +60,7 @@ const RegisterForm = () => {
             setValidateMessage(data.message);
         }
     }
-    //const errorHandler = typeof validateMessage !== 'string' ? validateMessage.map(message => <p key={message.error}>{message.field}: {message.error}</p>) : validateMessage;
-   
+       
     const errorLogin = typeof validateMessage !== 'string' ? validateMessage
     .filter(message => message.field === "login")
     .map(message => <p key={message.error}>{message.field}: {message.error}</p>) : '';

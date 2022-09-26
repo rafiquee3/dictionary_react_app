@@ -5,6 +5,10 @@ export const StoreContext = createContext(null);
 const StoreProvider = ({children}) => {
     const [words, setWords] = useState([]);
     const [user, setUser] = useState(null); //niezalogowany
+    const [editMode, setEditMode] = useState(false);
+    const [id, setId] = useState('');
+    const [editedWord, setEditedWord] = useState('');
+    const [editedTranslation, setEditedTranslation] = useState('');
 
   /*   const fetchData = async () => {
         const { data } = await request.get('/courses') //pobierz z Api o sciezce /courses
@@ -23,7 +27,15 @@ const StoreProvider = ({children}) => {
                 user,
                 setUser,
                 words,
-                setWords
+                setWords,
+                editMode, 
+                setEditMode,
+                id, 
+                setId,
+                editedWord, 
+                setEditedWord,
+                editedTranslation, 
+                setEditedTranslation
             }
         }>
             {children}

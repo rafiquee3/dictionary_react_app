@@ -49,7 +49,7 @@ const LoginForm = () => {
     }
     const toggleLogout = event => {
         setUser(null);
-        setWords(null);
+        setWords('');
     }
     const passwordHandler = event => {
         setPassword(event.target.value);
@@ -64,7 +64,6 @@ const LoginForm = () => {
         toggleLoginForm();
     }
     const fetchDataUser = async (login) => {
-        console.log(login)
         const {data, status} = await request.post(
             '/words/',
             {collection: login}
@@ -85,9 +84,8 @@ const LoginForm = () => {
             {login, password}
         );
         if(status === 200) {
-            console.log(data);
-            setUser(data.login);
             await fetchDataUser(login);
+            setUser(data.login);
             toggleLoginForm();
             clearInputField();
         }
