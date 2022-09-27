@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import request from '../../../../helpers/request'
 import styled, { css } from 'styled-components';
 import { StoreContext } from "../../../../store/StoreProvider";
-
+import { setInitialValue } from '../Word/Word'
 const Button = styled.button`
     height: 60px;
     padding: 0 20px;
@@ -11,7 +11,7 @@ const Button = styled.button`
     color: white;
     font-size: 25px;
 `
-const WordFunctions = ({ _id, word, translation }) => {
+const WordFunctions = ({ _id, word, translation, setInitialValue }) => {
         
     const {
 
@@ -24,8 +24,8 @@ const WordFunctions = ({ _id, word, translation }) => {
         editedTranslation,
         setEditedTranslation,
         id,
-        setId
-    
+        setId,
+        callback
     } = useContext(StoreContext);
 
     const getNewListOfWords = async (collectionName) => {
@@ -55,6 +55,10 @@ const WordFunctions = ({ _id, word, translation }) => {
             setValidateMessage(data.message);
         }
     }
+    const changeInputValue = (word, translation) => {
+            setEditedWord(word);
+            setEditedTranslation(translation);
+    }
     const saveInToDb = async (id) => {
         const collectionName = user;
 
@@ -64,25 +68,27 @@ const WordFunctions = ({ _id, word, translation }) => {
         if(status === 200) {
             getNewListOfWords(collectionName);
             setEditMode(false);
-            
+            changeInputValue('', '');
         }
         if(data.message) {
             setValidateMessage(data.message);
         }
     }
-    const editWord = async (id) => {
-        if (id === _id && editMode) {
-            await saveInToDb(id);
-        }
+    const editWord = async (_id, word, translation) => {
         setEditMode(!editMode);
-        setId(id);
+        setId(_id);
+        changeInputValue(word, translation);
+        setInitialValue(word, translation);
+  
+        if (id === _id && editMode) 
+        await saveInToDb(id); 
     }
-    //console.log(editedWord + "-" + editedTranslation);
+
     const showBttnLabel = _id === id && editMode ? 'Save' : 'Edit';
     return (
         <>
             <Button onClick={() => deleteWord(user, _id)}>Delete</Button>
-            <Button onClick={() => editWord(_id)}>{showBttnLabel}</Button>
+            <Button onClick={() => editWord(_id, word, translation)}>{showBttnLabel}</Button>
         </>
     )
 }

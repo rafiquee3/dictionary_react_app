@@ -118,7 +118,7 @@ const LoginForm = () => {
       }
     };
     const setButtonLabel = Boolean(user) ? (<Button onClick={toggleLogout} bgcolor="#9583DB">Wyloguj</Button>) : (<Button onClick={openOrClosedModal} bgcolor="#9583DB">Zaloguj sie</Button>);
-    
+    console.log(modalRef)
     return (
         <>
         {setButtonLabel}

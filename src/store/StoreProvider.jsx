@@ -9,6 +9,7 @@ const StoreProvider = ({children}) => {
     const [id, setId] = useState('');
     const [editedWord, setEditedWord] = useState('');
     const [editedTranslation, setEditedTranslation] = useState('');
+    const [callback, setCallback] = useState('');
 
   /*   const fetchData = async () => {
         const { data } = await request.get('/courses') //pobierz z Api o sciezce /courses
@@ -35,7 +36,9 @@ const StoreProvider = ({children}) => {
                 editedWord, 
                 setEditedWord,
                 editedTranslation, 
-                setEditedTranslation
+                setEditedTranslation,
+                callback,
+                setCallback,
             }
         }>
             {children}
