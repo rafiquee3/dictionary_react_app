@@ -1,5 +1,4 @@
 import React, { createContext, useEffect, useState } from "react";
-import request from "../helpers/request";
 export const StoreContext = createContext(null);
 
 const StoreProvider = ({children}) => {
@@ -9,8 +8,9 @@ const StoreProvider = ({children}) => {
     const [id, setId] = useState('');
     const [editedWord, setEditedWord] = useState('');
     const [editedTranslation, setEditedTranslation] = useState('');
-    const [callback, setCallback] = useState('');
-
+    const [editedWordErrors, setEditedWordErrors] = useState('');
+    const [flag, setFlag] = useState(false);
+    const [flagWasUpdated, setFlagWasUpdated] = useState(false);
   /*   const fetchData = async () => {
         const { data } = await request.get('/courses') //pobierz z Api o sciezce /courses
 
@@ -33,12 +33,13 @@ const StoreProvider = ({children}) => {
                 setEditMode,
                 id, 
                 setId,
-                editedWord, 
+                editedWord,
                 setEditedWord,
                 editedTranslation, 
                 setEditedTranslation,
-                callback,
-                setCallback,
+                editedWordErrors, 
+                setEditedWordErrors,
+                flag, setFlag
             }
         }>
             {children}

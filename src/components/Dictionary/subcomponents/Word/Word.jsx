@@ -1,5 +1,6 @@
-import React, { forwardRef, useContext, useImperativeHandle, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import styled, { css } from 'styled-components';
+import WordFunctions from "../WordFunctions/WordFunctions";
 import { StoreContext } from "../../../../store/StoreProvider";
 export const setInitialValue = setInitialValue;
 
@@ -27,12 +28,28 @@ const Input = styled.input`
     border: none;
     text-align: center;
 `
-const Word = ({ word: wordFromDb, translation: translationFromDb, _id }, ref) => {
+const Error = styled.div`
 
-    const { editMode } = useContext(StoreContext);
+    display: flex; 
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #DB9EA2;
+    border-radius: 12px;
+    font-size: 17px;
+    color: #320306;
+`
+const Wrapper = styled.div`
+    display: flex;
+    
+`
+const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
+
     const [word, setWord] = useState(wordFromDb);
     const [translation, setTranslation] = useState(translationFromDb);
-    const [validateMessage, setValidateMessage] = useState('');
+    const wordFromDbRef = useRef(null);
+    const refEditBttn = useRef(null);
+
     const {
 
         user,
@@ -41,12 +58,18 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }, ref) =>
         setWords,
         id,
         setId,
-        editedWord, 
+        editedWord,
+        editMode,
+        setEditMode, 
         setEditedWord,
         editedTranslation,
         setEditedTranslation,
+        flag,
+        setFlag,
+        setFlagWasUpdated,
         callback,
-        setCallback
+        setCallback,
+        editedWordErrors,
 
     } = useContext(StoreContext);
 
@@ -58,27 +81,73 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }, ref) =>
         setTranslation(event.target.value);
         setEditedTranslation(event.target.value);
     }
-    const setInitialValue = (word, translation) => {
-        setWord(word);
-        setTranslation(translation);
+    const setInitialValue = () => {
+        setWord(wordFromDb);
+        setTranslation(translationFromDb);
     }
+    const test = (str = '') => { alert(str)}
 
-    useImperativeHandle(ref, () => ({
-        setInitialValue
-    }));
+    //click outside loginform close component 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
 
+            if (wordFromDbRef.current && !wordFromDbRef.current.contains(event.target) && !refEditBttn.current.ref.contains(event.target)) {
+
+               // if (flag) {
+                   /*  setFlag(false);
+                    setEditMode(false);
+                    setFlagWasUpdated(true); */
+                    setEditMode(false);
+                    setFlag(true);
+                    refEditBttn.current.setIsEditBttnClicked();
+                    console.log('zmienilem flage w useEffect')
+               // }
+ 
+            }
+        };
+        document.addEventListener('click', handleClickOutside, true);
+        return () => {
+            document.removeEventListener('click', handleClickOutside, true); // 3th arg listen on capturing phase instead off bubbling phase
+        };
+    });
+
+    const errorWord = typeof editedWordErrors !== 'string' ? editedWordErrors
+    .filter(message => message.field === "word")
+    .map(message => <p key={message.error}>{message.field}: {message.error}</p>) : '';
+
+    const errorTranslation = typeof editedWordErrors !== 'string' ? editedWordErrors
+    .filter(message => message.field === "translation")
+    .map(message => <p key={message.error}>{message.field}: {message.error}</p>) : '';
+
+    const otherErrors = typeof editedWordErrors !== 'string' ? '' : editedWordErrors;
+
+    //const ref = React.createRef();
+   console.log(wordFromDbRef)
+   console.log(refEditBttn.current)
     return (
         <>  
             { id === _id && editMode ?
-            <WordFromDb>
-                <Input value={editedWord} onChange={wordHandler}/>
-                <Input value={editedTranslation} onChange={translationHandler}/>
-            </WordFromDb> 
+           
+                <Wrapper>
+                <div>    
+                    <WordFromDb ref={wordFromDbRef}>      
+                        <Input value={editedWord} onChange={wordHandler}/>
+                        <Input value={editedTranslation} onChange={translationHandler}/>
+                    </WordFromDb>
+                    <Error><p>{errorWord}</p><p>{errorTranslation}</p><p>{otherErrors}</p></Error>
+                </div>   
+                <WordFunctions word={wordFromDb} translation={translationFromDb} _id={_id} setInitialValue={setInitialValue} ref={refEditBttn}/> 
+                </Wrapper>
+               
+            
             : 
+            <Wrapper>
             <WordFromDb>{wordFromDb + " - " + translationFromDb}</WordFromDb> 
+            <WordFunctions word={wordFromDb} translation={translationFromDb} _id={_id} setInitialValue={setInitialValue} />
+            </Wrapper>
             }
         </>
     )
 }
 
-export default forwardRef(Word);
+export default Word;

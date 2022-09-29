@@ -1,8 +1,9 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState, useRef, forwardRef, useImperativeHandle} from "react";
 import request from '../../../../helpers/request'
 import styled, { css } from 'styled-components';
 import { StoreContext } from "../../../../store/StoreProvider";
-import { setInitialValue } from '../Word/Word'
+import useTimeout from "./useTimeout";
+
 const Button = styled.button`
     height: 60px;
     padding: 0 20px;
@@ -11,21 +12,29 @@ const Button = styled.button`
     color: white;
     font-size: 25px;
 `
-const WordFunctions = ({ _id, word, translation, setInitialValue }) => {
-        
+const WordFunctions = ({ _id, word, translation, setInitialValue }, ref) => {
+const [isEditBttnClicked, setIsEditBttnClicked] = useState(false); 
+const bttnRef = useRef();
+
+let errorShowTime = '';
     const {
 
         user,
         setWords,
         editMode,
         setEditMode,
-        editedWord, 
+        editedWord,
+        flagWasUpdated, 
         setEditedWord,
         editedTranslation,
         setEditedTranslation,
         id,
         setId,
-        callback
+        flag,
+        setFlag,
+        editedWordErrors,
+        setEditedWordErrors,
+
     } = useContext(StoreContext);
 
     const getNewListOfWords = async (collectionName) => {
@@ -37,7 +46,7 @@ const WordFunctions = ({ _id, word, translation, setInitialValue }) => {
             setWords(data)
         }
         if(data.message) {
-            setValidateMessage(data.message);
+            setEditedWordErrors(data.message);
         }
     }
 
@@ -52,7 +61,7 @@ const WordFunctions = ({ _id, word, translation, setInitialValue }) => {
             getNewListOfWords(collectionName);
         }
         if(data.message) {
-            setValidateMessage(data.message);
+            setEditedWordErrors(data.message);
         }
     }
     const changeInputValue = (word, translation) => {
@@ -71,25 +80,48 @@ const WordFunctions = ({ _id, word, translation, setInitialValue }) => {
             changeInputValue('', '');
         }
         if(data.message) {
-            setValidateMessage(data.message);
+            changeInputValue(editedWord, editedTranslation);
+            setEditMode(true);
+            setEditedWordErrors(data.message);
+            setIsEditBttnClicked(true);
+            
+            //errorShowTime = setTimeout(() => setEditedWordErrors(''), 4000);
         }
     }
     const editWord = async (_id, word, translation) => {
-        setEditMode(!editMode);
+        //setFlag(true);
+        if(flag) {
+            setFlag(false);
+        }
         setId(_id);
+        setEditMode(true);
+        console.log('edit true')
+        setEditedWordErrors('')
         changeInputValue(word, translation);
-        setInitialValue(word, translation);
-  
-        if (id === _id && editMode) 
-        await saveInToDb(id); 
+
+        if (isEditBttnClicked) {
+            setEditMode(false);
+            setIsEditBttnClicked(false);
+            return saveInToDb(_id);
+        }
+        
+        
+        setIsEditBttnClicked(true);
     }
+
+    useImperativeHandle(ref, () => ({
+        ref: bttnRef.current,
+        setIsEditBttnClicked: () => {
+            setIsEditBttnClicked(false);
+        }
+    }));
 
     const showBttnLabel = _id === id && editMode ? 'Save' : 'Edit';
     return (
         <>
             <Button onClick={() => deleteWord(user, _id)}>Delete</Button>
-            <Button onClick={() => editWord(_id, word, translation)}>{showBttnLabel}</Button>
+            <Button ref={bttnRef} onClick={() => editWord(_id, word, translation)}>{showBttnLabel}</Button>
         </>
     )
 }
-export default WordFunctions;
+export default forwardRef(WordFunctions);
