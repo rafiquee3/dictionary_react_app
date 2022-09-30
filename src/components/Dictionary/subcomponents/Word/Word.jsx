@@ -40,6 +40,7 @@ const Error = styled.div`
 `
 const Wrapper = styled.div`
     display: flex;
+    align-items: center;
     
 `
 const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
@@ -91,7 +92,7 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
     }
 
     const dubleClickEditMode = (event, id, word, translation) => {
-       // console.log(ref)
+ 
         switch (event.detail) {
 
                 case 2: {
@@ -126,7 +127,6 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
     useEffect(() => {
         const handleClickInside = (event) => {
            
-            console.log(insideWordClick)
             if (insideWordClick.current && insideWordClick.current.contains(event.target)) {
                 //console.log(insideWordClick.current.dataset.word)
                 //console.log('double click')

@@ -12,7 +12,6 @@ const Button = styled.button`
     font-size: 25px;
 `
 const WordFunctions = ({ _id, word, translation }, ref) => {
-//const [isEditBttnClicked, setIsEditBttnClicked] = useState(false); 
 const editBttnRef = useRef();
 
 const {

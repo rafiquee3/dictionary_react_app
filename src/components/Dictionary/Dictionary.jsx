@@ -2,9 +2,11 @@ import React, { useContext } from "react";
 import { StoreContext } from "../../store/StoreProvider";
 import styled, { css } from 'styled-components';
 import Word from "./subcomponents/Word/Word";
+import Paginator from "../Paginator/Paginator";
 
 const WordWrapper = styled.div`
     display: flex;
+    background: gray;
 `
 
 const Dictionary = () => {
@@ -21,7 +23,9 @@ const Dictionary = () => {
 
     return (
         <>
-            {listOfAllWords.reverse()}
+            <Paginator items={words} howMany={3}>
+                {listOfAllWords}
+            </Paginator>
         </>
     )
 }
