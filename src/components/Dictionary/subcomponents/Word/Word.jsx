@@ -29,7 +29,6 @@ const Input = styled.input`
     text-align: center;
 `
 const Error = styled.div`
-
     display: flex; 
     flex-direction: column;
     align-items: center;
@@ -48,6 +47,7 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
     const [word, setWord] = useState(wordFromDb);
     const [translation, setTranslation] = useState(translationFromDb);
     const wordFromDbRef = useRef(null);
+    const insideWordClick = useRef();
     const refEditBttn = useRef(null);
 
     const {
@@ -64,12 +64,14 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
         setEditedWord,
         editedTranslation,
         setEditedTranslation,
-        flag,
-        setFlag,
-        setFlagWasUpdated,
+        outsideEditBttnClick,
+        setOutsideEditBttnClick,
+        isEditBttnClicked, 
+        setIsEditBttnClicked,
         callback,
         setCallback,
         editedWordErrors,
+        setEditedWordErrors,
 
     } = useContext(StoreContext);
 
@@ -77,37 +79,63 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
         setWord(event.target.value);
         setEditedWord(event.target.value);
     }
+
     const translationHandler = event => {
         setTranslation(event.target.value);
         setEditedTranslation(event.target.value);
     }
-    const setInitialValue = () => {
-        setWord(wordFromDb);
-        setTranslation(translationFromDb);
-    }
-    const test = (str = '') => { alert(str)}
 
-    //click outside loginform close component 
+    const setInitialValue = (word = wordFromDb, translation = translationFromDb) => {
+        setEditedWord(word);
+        setEditedTranslation(translation);
+    }
+
+    const dubleClickEditMode = (event, id, word, translation) => {
+       // console.log(ref)
+        switch (event.detail) {
+
+                case 2: {
+                    if (editedWordErrors && !isEditBttnClicked) setEditedWordErrors('');
+
+                    setId(id);
+                    setEditMode(true);
+                    setInitialValue(word, translation);
+                    setIsEditBttnClicked(true);
+                    break;
+                }
+          }
+    }
+
+    // click outside edit button 
     useEffect(() => {
         const handleClickOutside = (event) => {
 
             if (wordFromDbRef.current && !wordFromDbRef.current.contains(event.target) && !refEditBttn.current.ref.contains(event.target)) {
-
-               // if (flag) {
-                   /*  setFlag(false);
-                    setEditMode(false);
-                    setFlagWasUpdated(true); */
-                    setEditMode(false);
-                    setFlag(true);
-                    refEditBttn.current.setIsEditBttnClicked();
-                    console.log('zmienilem flage w useEffect')
-               // }
- 
+            
+                setEditMode(false);
+                setOutsideEditBttnClick(true);
+                refEditBttn.current.setIsEditBttnClicked();
             }
         };
         document.addEventListener('click', handleClickOutside, true);
         return () => {
-            document.removeEventListener('click', handleClickOutside, true); // 3th arg listen on capturing phase instead off bubbling phase
+            document.removeEventListener('click', handleClickOutside, true); 
+        };
+    });
+
+    useEffect(() => {
+        const handleClickInside = (event) => {
+           
+            console.log(insideWordClick)
+            if (insideWordClick.current && insideWordClick.current.contains(event.target)) {
+                //console.log(insideWordClick.current.dataset.word)
+                //console.log('double click')
+                dubleClickEditMode(event, insideWordClick.current.id, insideWordClick.current.dataset.word, insideWordClick.current.dataset.translation);
+            }
+        };
+        document.addEventListener('click', handleClickInside, true);
+        return () => {
+            document.removeEventListener('click', handleClickInside, true); 
         };
     });
 
@@ -121,14 +149,11 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
 
     const otherErrors = typeof editedWordErrors !== 'string' ? '' : editedWordErrors;
 
-    //const ref = React.createRef();
-   console.log(wordFromDbRef)
-   console.log(refEditBttn.current)
     return (
         <>  
             { id === _id && editMode ?
            
-                <Wrapper>
+            <Wrapper>
                 <div>    
                     <WordFromDb ref={wordFromDbRef}>      
                         <Input value={editedWord} onChange={wordHandler}/>
@@ -136,14 +161,16 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
                     </WordFromDb>
                     <Error><p>{errorWord}</p><p>{errorTranslation}</p><p>{otherErrors}</p></Error>
                 </div>   
-                <WordFunctions word={wordFromDb} translation={translationFromDb} _id={_id} setInitialValue={setInitialValue} ref={refEditBttn}/> 
-                </Wrapper>
-               
-            
+                <WordFunctions word={wordFromDb} translation={translationFromDb} _id={_id} ref={refEditBttn}/> 
+            </Wrapper>
+                
             : 
+
             <Wrapper>
-            <WordFromDb>{wordFromDb + " - " + translationFromDb}</WordFromDb> 
-            <WordFunctions word={wordFromDb} translation={translationFromDb} _id={_id} setInitialValue={setInitialValue} />
+                <div>
+                    <WordFromDb id={_id} data-word={wordFromDb} data-translation={translationFromDb} ref={insideWordClick} onClick={(event) => dubleClickEditMode(event)}>{wordFromDb + " - " + translationFromDb}</WordFromDb> 
+                </div>
+                <WordFunctions word={wordFromDb} translation={translationFromDb} _id={_id} />
             </Wrapper>
             }
         </>

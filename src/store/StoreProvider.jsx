@@ -9,19 +9,9 @@ const StoreProvider = ({children}) => {
     const [editedWord, setEditedWord] = useState('');
     const [editedTranslation, setEditedTranslation] = useState('');
     const [editedWordErrors, setEditedWordErrors] = useState('');
-    const [flag, setFlag] = useState(false);
-    const [flagWasUpdated, setFlagWasUpdated] = useState(false);
-  /*   const fetchData = async () => {
-        const { data } = await request.get('/courses') //pobierz z Api o sciezce /courses
+    const [outsideEditBttnClick, setOutsideEditBttnClick] = useState(false);
+    const [isEditBttnClicked, setIsEditBttnClicked] = useState(false);
 
-        setCourses(data.courses);
-    }
-    //wstrzykiwanie danych po zaladowaniu aplikacji
-    useEffect(() => {
-        fetchData();
-
-    }, []); //pusta tablica oznacza pojedyncze wykonanie */
-    
     return (
         <StoreContext.Provider value={
             {
@@ -39,7 +29,10 @@ const StoreProvider = ({children}) => {
                 setEditedTranslation,
                 editedWordErrors, 
                 setEditedWordErrors,
-                flag, setFlag
+                outsideEditBttnClick, 
+                setOutsideEditBttnClick,
+                isEditBttnClicked, 
+                setIsEditBttnClicked,
             }
         }>
             {children}

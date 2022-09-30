@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState, useRef, forwardRef, useImperati
 import request from '../../../../helpers/request'
 import styled, { css } from 'styled-components';
 import { StoreContext } from "../../../../store/StoreProvider";
-import useTimeout from "./useTimeout";
 
 const Button = styled.button`
     height: 60px;
@@ -12,28 +11,28 @@ const Button = styled.button`
     color: white;
     font-size: 25px;
 `
-const WordFunctions = ({ _id, word, translation, setInitialValue }, ref) => {
-const [isEditBttnClicked, setIsEditBttnClicked] = useState(false); 
-const bttnRef = useRef();
+const WordFunctions = ({ _id, word, translation }, ref) => {
+//const [isEditBttnClicked, setIsEditBttnClicked] = useState(false); 
+const editBttnRef = useRef();
 
-let errorShowTime = '';
-    const {
+const {
 
         user,
         setWords,
         editMode,
         setEditMode,
         editedWord,
-        flagWasUpdated, 
         setEditedWord,
         editedTranslation,
         setEditedTranslation,
         id,
         setId,
-        flag,
-        setFlag,
+        outsideEditBttnClick,
+        setOutsideEditBttnClick,
         editedWordErrors,
         setEditedWordErrors,
+        isEditBttnClicked, 
+        setIsEditBttnClicked
 
     } = useContext(StoreContext);
 
@@ -50,6 +49,11 @@ let errorShowTime = '';
         }
     }
 
+    const changeInputValue = (word, translation) => {
+        setEditedWord(word);
+        setEditedTranslation(translation);
+}
+
     const deleteWord = async (user, id) => {
         const collectionName = user;
     
@@ -64,10 +68,7 @@ let errorShowTime = '';
             setEditedWordErrors(data.message);
         }
     }
-    const changeInputValue = (word, translation) => {
-            setEditedWord(word);
-            setEditedTranslation(translation);
-    }
+
     const saveInToDb = async (id) => {
         const collectionName = user;
 
@@ -84,33 +85,30 @@ let errorShowTime = '';
             setEditMode(true);
             setEditedWordErrors(data.message);
             setIsEditBttnClicked(true);
-            
-            //errorShowTime = setTimeout(() => setEditedWordErrors(''), 4000);
         }
     }
+
     const editWord = async (_id, word, translation) => {
-        //setFlag(true);
-        if(flag) {
-            setFlag(false);
+  
+        if (outsideEditBttnClick) {
+            setOutsideEditBttnClick(false);
         }
         setId(_id);
         setEditMode(true);
-        console.log('edit true')
-        setEditedWordErrors('')
-        changeInputValue(word, translation);
 
+        if (editedWordErrors && !isEditBttnClicked) setEditedWordErrors('');
+        
         if (isEditBttnClicked) {
-            setEditMode(false);
             setIsEditBttnClicked(false);
             return saveInToDb(_id);
         }
         
-        
+        changeInputValue(word, translation);
         setIsEditBttnClicked(true);
     }
 
     useImperativeHandle(ref, () => ({
-        ref: bttnRef.current,
+        ref: editBttnRef.current,
         setIsEditBttnClicked: () => {
             setIsEditBttnClicked(false);
         }
@@ -120,8 +118,9 @@ let errorShowTime = '';
     return (
         <>
             <Button onClick={() => deleteWord(user, _id)}>Delete</Button>
-            <Button ref={bttnRef} onClick={() => editWord(_id, word, translation)}>{showBttnLabel}</Button>
+            <Button ref={editBttnRef} onClick={() => editWord(_id, word, translation)}>{showBttnLabel}</Button>
         </>
     )
 }
+
 export default forwardRef(WordFunctions);
