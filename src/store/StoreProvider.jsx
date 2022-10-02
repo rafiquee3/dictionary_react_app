@@ -11,6 +11,7 @@ const StoreProvider = ({children}) => {
     const [editedWordErrors, setEditedWordErrors] = useState('');
     const [outsideEditBttnClick, setOutsideEditBttnClick] = useState(false);
     const [isEditBttnClicked, setIsEditBttnClicked] = useState(false);
+    const [page, setPage] = useState(0);
 
     return (
         <StoreContext.Provider value={
@@ -33,6 +34,8 @@ const StoreProvider = ({children}) => {
                 setOutsideEditBttnClick,
                 isEditBttnClicked, 
                 setIsEditBttnClicked,
+                page, 
+                setPage
             }
         }>
             {children}

@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState, useRef } from "react";
 import styled, { css } from 'styled-components';
 import WordFunctions from "../WordFunctions/WordFunctions";
 import { StoreContext } from "../../../../store/StoreProvider";
-export const setInitialValue = setInitialValue;
 
 const WordFromDb = styled.div`
     display: flex;
@@ -128,8 +127,7 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
         const handleClickInside = (event) => {
            
             if (insideWordClick.current && insideWordClick.current.contains(event.target)) {
-                //console.log(insideWordClick.current.dataset.word)
-                //console.log('double click')
+
                 dubleClickEditMode(event, insideWordClick.current.id, insideWordClick.current.dataset.word, insideWordClick.current.dataset.translation);
             }
         };
@@ -148,7 +146,7 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
     .map(message => <p key={message.error}>{message.field}: {message.error}</p>) : '';
 
     const otherErrors = typeof editedWordErrors !== 'string' ? '' : editedWordErrors;
-
+    console.log('word')
     return (
         <>  
             { id === _id && editMode ?

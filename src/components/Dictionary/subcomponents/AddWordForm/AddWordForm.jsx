@@ -41,7 +41,7 @@ const AddWordForm = () => {
     const [translation, setTranslation] = useState('');
     const [validateMessage, setValidateMessage] = useState('');
     const {isShowing: iswordFormShowed, toggle: toggleWordForm} = useModal();
-    const {user, setUser,  words, setWords} = useContext(StoreContext);
+    const {user, setUser,  words, setWords, page, setPage} = useContext(StoreContext);
     const modalRef = useRef(null);
 
     const wordHandler = event => {
@@ -87,7 +87,9 @@ const AddWordForm = () => {
             console.log(data)
             toggleWordForm();
             clearInputField();
+            setPage(0);
             getNewListOfWords(collectionName);
+            
         }
         if(data.message) {
             setValidateMessage(data.message);

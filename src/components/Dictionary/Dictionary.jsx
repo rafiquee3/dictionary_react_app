@@ -23,7 +23,7 @@ const Dictionary = () => {
 
     return (
         <>
-            <Paginator items={words} howMany={3}>
+            <Paginator items={words} howMany={5}>
                 {listOfAllWords}
             </Paginator>
         </>
