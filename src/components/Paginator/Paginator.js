@@ -2,7 +2,7 @@ import React ,{ useContext, useState } from "react";
 import { StoreContext } from "../../store/StoreProvider";
 import LinkPage from "./LinkPage";
 
-const Paginator = ({items, howMany, children}) => {
+const Paginator = ({ howMany, children}) => {
     const {user, setUser, words, setWords, editedWord, editedTranslation, page, setPage} = useContext(StoreContext);
 
     const childrenLength = children.length;
@@ -21,8 +21,10 @@ const Paginator = ({items, howMany, children}) => {
         return allSlice[i];
     }
 
-    const clickedLinkFn = (e, i) => {
-        setPage(i);
+    const clickedLinkFn = (e, page) => {
+        if( page < 1) page = 0;
+
+        setPage(page);
     }
 
     const currentPage = page;

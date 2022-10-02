@@ -19,14 +19,17 @@ const Link = styled.div`
         cursor: pointer;
         letter-spacing: 7px;
         &:hover {
-            color: red;
+            color: black;
           }
     }
     .active {
         color: black;
     }
-    .disactive {
+    .desactive {
         color: white;
+    }
+    .nextPrevBttnDesactive {
+        color: gray;
     }
     
 `
@@ -37,9 +40,15 @@ const LinkPage = ({ clickedLinkFn, numberOfPages }) => {
     const generateElements = () => {
         let reactElements = [];
 
+        reactElements.push(React.createElement('li', { onClick: (event) => clickedLinkFn(event, page - 1), className: `li ${ page === 0 ? 'nextPrevBttnDesactive' : ''}` }, `<`))
+
         for (let i = 0; i < numberOfPages; i++) {
-            reactElements.push(React.createElement('li', { onClick: (event) => clickedLinkFn(event, i), className: `li ${i === page ? 'active' : 'disactive'}` }, `${i + 1}`))
+            reactElements.push(React.createElement('li', { onClick: (event) => clickedLinkFn(event, i), className: `li ${i === page ? 'active' : 'desactive'}` }, `${i + 1}`))
         }
+
+        const length = reactElements.length - 2; 
+
+        reactElements.push(React.createElement('li', { onClick: (event) => clickedLinkFn(event, page + 1), className: `li ${ page === length ? 'nextPrevBttnDesactive' : ''}` }, `>`))
 
         return reactElements;
     }

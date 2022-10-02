@@ -10,9 +10,8 @@ const WordWrapper = styled.div`
 `
 
 const Dictionary = () => {
-    const {user, setUser, words, setWords, editedWord, editedTranslation} = useContext(StoreContext);
+    const {user, setUser, words, setWords, editedWord, editedTranslation, testMode, setTestMode} = useContext(StoreContext);
 
-    
     const listOfAllWords = words !== null ? 
     (words.map(word => 
         <WordWrapper>
@@ -20,11 +19,19 @@ const Dictionary = () => {
         </WordWrapper>)) 
     : 
         '';
+    
+    const listOfAllWordsTestMode = words !== null ? 
+    (words.map(word => 
+        <WordWrapper>
+            <Word key={word._id} word={word.translation} translation={word.word} _id={word._id}></Word>
+        </WordWrapper>)) 
+    : 
+        '';
 
     return (
         <>
-            <Paginator items={words} howMany={5}>
-                {listOfAllWords}
+            <Paginator howMany={5}>
+                { testMode ? listOfAllWordsTestMode : listOfAllWords }
             </Paginator>
         </>
     )

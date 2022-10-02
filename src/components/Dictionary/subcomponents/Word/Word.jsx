@@ -8,7 +8,7 @@ const WordFromDb = styled.div`
     display-direction: rows;
     align-items: center;
     justify-content: center;
-    width: 600px;
+    width: ${props => props.width || '600px'};
     height: 70px;
     background: #7E5675;
     color: white;
@@ -60,7 +60,9 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
         setId,
         editedWord,
         editMode,
-        setEditMode, 
+        setEditMode,
+        testMode,
+        setTestMode, 
         setEditedWord,
         editedTranslation,
         setEditedTranslation,
@@ -93,17 +95,35 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
     const dubleClickEditMode = (event, id, word, translation) => {
  
         switch (event.detail) {
+                case 1: {
+                    alert('jazda')
+                    console.log('one click')
+                    break;
+                }
 
                 case 2: {
                     if (editedWordErrors && !isEditBttnClicked) setEditedWordErrors('');
-
-                    setId(id);
-                    setEditMode(true);
-                    setInitialValue(word, translation);
-                    setIsEditBttnClicked(true);
-                    break;
+                    if (!testMode) {
+                        setId(id);
+                        setEditMode(true);
+                        setInitialValue(word, translation);
+                        setIsEditBttnClicked(true);
+                        break;
+                    }
                 }
           }
+    }
+
+    const generateTranslationFromDb = (translation) => {
+        if (testMode) {
+            const result = translation
+            .split('')
+            .map(lettre => lettre = '_ ')
+            .join('');
+
+            return result;
+        }
+        return translation;
     }
 
     // click outside edit button 
@@ -146,7 +166,8 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
     .map(message => <p key={message.error}>{message.field}: {message.error}</p>) : '';
 
     const otherErrors = typeof editedWordErrors !== 'string' ? '' : editedWordErrors;
-    console.log('word')
+    console.log(id)
+    console.log(_id)
     return (
         <>  
             { id === _id && editMode ?
@@ -159,16 +180,16 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
                     </WordFromDb>
                     <Error><p>{errorWord}</p><p>{errorTranslation}</p><p>{otherErrors}</p></Error>
                 </div>   
-                <WordFunctions word={wordFromDb} translation={translationFromDb} _id={_id} ref={refEditBttn}/> 
+                { testMode ? '' : <WordFunctions word={wordFromDb} translation={translationFromDb} _id={_id} ref={refEditBttn}/>} 
             </Wrapper>
                 
             : 
 
             <Wrapper>
                 <div>
-                    <WordFromDb id={_id} data-word={wordFromDb} data-translation={translationFromDb} ref={insideWordClick} onClick={(event) => dubleClickEditMode(event)}>{wordFromDb + " - " + translationFromDb}</WordFromDb> 
+                    <WordFromDb id={_id} data-word={wordFromDb} data-translation={translationFromDb} ref={insideWordClick} onClick={(event) => dubleClickEditMode(event)} width={testMode ? "800px" : ''}>{wordFromDb + " - " + generateTranslationFromDb(translationFromDb)}</WordFromDb> 
                 </div>
-                <WordFunctions word={wordFromDb} translation={translationFromDb} _id={_id} />
+                { testMode ? '' : <WordFunctions word={wordFromDb} translation={translationFromDb} _id={_id} /> }
             </Wrapper>
             }
         </>

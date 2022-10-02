@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import AddWordForm from "../Dictionary/subcomponents/AddWordForm/AddWordForm";
 import LoginForm from "../LoginForm/LoginForm";
 import styled, { css } from 'styled-components';
+import { StoreContext } from "../../store/StoreProvider";
 
 const Wrapper = styled.header`
     position: fixed;
@@ -18,13 +19,22 @@ const Wrapper = styled.header`
     color: white;
     font-size: 25px;
 `
-
+const Button = styled.button`
+    background: ${props => props.bgcolor || 'white'};
+    border-radius: 4px;
+    border-color: #584894;
+    padding: 15px;
+    color: black;
+`
 const Header = () => {
+    const { testMode, setTestMode } = useContext(StoreContext);
+    console.log(testMode)
     return (
         <>
             <Wrapper>
                 <p>Dictionary</p>
                 <AddWordForm />
+                <Button onClick={() => setTestMode(!testMode)}> { testMode ? 'results' : 'test'} </Button>
                 <LoginForm />
             </Wrapper>
         </>
