@@ -28,7 +28,7 @@ const Button = styled.button`
 `
 const Header = () => {
     const { testMode, setTestMode } = useContext(StoreContext);
-    console.log(testMode)
+    
     return (
         <>
             <Wrapper>

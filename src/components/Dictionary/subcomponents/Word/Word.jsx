@@ -18,6 +18,10 @@ const WordFromDb = styled.div`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    .translation {
+        letter-spacing: ${props => props.spacing}
+    }
 `
 const Input = styled.input`
     background: #9584DB;
@@ -46,6 +50,8 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
 
     const [word, setWord] = useState(wordFromDb);
     const [translation, setTranslation] = useState(translationFromDb);
+    const [translationTestMode, setTranslationTestMode] = useState('')
+    const [editModeInTestMode, setEditModeInTestMode] = useState(false);
     const wordFromDbRef = useRef(null);
     const insideWordClick = useRef();
     const refEditBttn = useRef(null);
@@ -86,23 +92,49 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
         setTranslation(event.target.value);
         setEditedTranslation(event.target.value);
     }
+    
+    const translationTestModeHandler = (event, translation) => {
+        //setTranslationTestMode('')
+        // ile  _
+        //  slice
+        const slice_ = event.target.value
+            .split('')
+            .slice(event.target.value.length)
+            .join()
+
+        const length = slice_.length;
+
+        const temp = translation
+            .split('')
+            .slice(length)
+            .map(letter => letter = '_')
+            .join()
+        console.log(temp)
+        let result = slice_ + temp;
+        event.target.selectionStart = length;
+        setTranslationTestMode(result)
+    }
 
     const setInitialValue = (word = wordFromDb, translation = translationFromDb) => {
         setEditedWord(word);
         setEditedTranslation(translation);
     }
 
-    const dubleClickEditMode = (event, id, word, translation) => {
- 
+    const handleClickEvent = (event, id, word, translation) => {
+        console.log(event.detail)
         switch (event.detail) {
                 case 1: {
-                    alert('jazda')
-                    console.log('one click')
+                    if (testMode) {
+                        setEditModeInTestMode(true);
+                        break;
+                    }
+
                     break;
                 }
 
                 case 2: {
                     if (editedWordErrors && !isEditBttnClicked) setEditedWordErrors('');
+
                     if (!testMode) {
                         setId(id);
                         setEditMode(true);
@@ -110,7 +142,8 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
                         setIsEditBttnClicked(true);
                         break;
                     }
-                }
+                    break;
+                }     
           }
     }
 
@@ -118,44 +151,59 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
         if (testMode) {
             const result = translation
             .split('')
-            .map(lettre => lettre = '_ ')
+            .map(lettre => lettre = '_')
             .join('');
 
             return result;
         }
+
         return translation;
     }
-
+    
     // click outside edit button 
     useEffect(() => {
         const handleClickOutside = (event) => {
-
-            if (wordFromDbRef.current && !wordFromDbRef.current.contains(event.target) && !refEditBttn.current.ref.contains(event.target)) {
             
-                setEditMode(false);
-                setOutsideEditBttnClick(true);
-                refEditBttn.current.setIsEditBttnClicked();
+            //if (wordFromDbRef.current && !wordFromDbRef.current.contains(event.target) ) {
+            
+            //}
+  
+            if (!testMode) {
+                if (insideWordClick.current && !insideWordClick.current.contains(event.target) && !refEditBttn.current.ref.contains(event.target)) {
+                    console.log('outside click')
+                    setEditMode(false);
+                    setOutsideEditBttnClick(true);
+                    refEditBttn.current.setIsEditBttnClicked();
+                }
+            } else if (testMode && insideWordClick.current && !insideWordClick.current.contains(event.target)) {
+                setEditModeInTestMode(false);
             }
         };
         document.addEventListener('click', handleClickOutside, true);
         return () => {
             document.removeEventListener('click', handleClickOutside, true); 
         };
-    });
+    }, [testMode]);
 
-    useEffect(() => {
+
+   //const runEffect = useRef(true);
+/*     useEffect(() => {
+        //if (runEffect.current) {
+       // runEffect.current = false;
+        console.log('useEffect double')
         const handleClickInside = (event) => {
            
             if (insideWordClick.current && insideWordClick.current.contains(event.target)) {
 
-                dubleClickEditMode(event, insideWordClick.current.id, insideWordClick.current.dataset.word, insideWordClick.current.dataset.translation);
+                handleClickEvent(event, insideWordClick.current.id, insideWordClick.current.dataset.word, insideWordClick.current.dataset.translation);
             }
         };
-        document.addEventListener('click', handleClickInside, true);
+        document.addEventListener('click', () => handleClickInside, true);
         return () => {
             document.removeEventListener('click', handleClickInside, true); 
-        };
-    });
+        }; 
+      
+    }, []); */
 
     const errorWord = typeof editedWordErrors !== 'string' ? editedWordErrors
     .filter(message => message.field === "word")
@@ -166,15 +214,14 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
     .map(message => <p key={message.error}>{message.field}: {message.error}</p>) : '';
 
     const otherErrors = typeof editedWordErrors !== 'string' ? '' : editedWordErrors;
-    console.log(id)
-    console.log(_id)
+    console.log('renderuje word')
     return (
         <>  
             { id === _id && editMode ?
            
             <Wrapper>
                 <div>    
-                    <WordFromDb ref={wordFromDbRef}>      
+                    <WordFromDb ref={insideWordClick}>      
                         <Input value={editedWord} onChange={wordHandler}/>
                         <Input value={editedTranslation} onChange={translationHandler}/>
                     </WordFromDb>
@@ -183,14 +230,60 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
                 { testMode ? '' : <WordFunctions word={wordFromDb} translation={translationFromDb} _id={_id} ref={refEditBttn}/>} 
             </Wrapper>
                 
-            : 
+            : testMode ?
 
             <Wrapper>
                 <div>
-                    <WordFromDb id={_id} data-word={wordFromDb} data-translation={translationFromDb} ref={insideWordClick} onClick={(event) => dubleClickEditMode(event)} width={testMode ? "800px" : ''}>{wordFromDb + " - " + generateTranslationFromDb(translationFromDb)}</WordFromDb> 
-                </div>
-                { testMode ? '' : <WordFunctions word={wordFromDb} translation={translationFromDb} _id={_id} /> }
+                    <WordFromDb 
+                        id={_id} 
+                        data-word={wordFromDb} 
+                        data-translation={translationFromDb} 
+                        ref={insideWordClick} 
+                        onClick={(event) => handleClickEvent(event, _id, wordFromDb, translationFromDb)} 
+                        width={testMode ? "800px" : ''} 
+                        spacing={testMode ? '10px' : ''}>
+
+                            { editModeInTestMode ? 
+                            <div>
+                                {wordFromDb} 
+                                <span className="translation" >
+                                    &nbsp;-&nbsp;
+                                    <Input value={translationTestMode} onChange={(event) => translationTestModeHandler(event, translationFromDb)}></Input>
+                                </span>
+                            </div>
+                            :
+                            <div>
+                                {wordFromDb} 
+                                <span className="translation" >
+                                    &nbsp;-&nbsp;{generateTranslationFromDb(translationFromDb)}
+                                </span>
+                            </div>
+                            }      
+                    </WordFromDb> 
+                </div>       
             </Wrapper>
+
+            :
+
+            <Wrapper>
+                <div>
+                    <WordFromDb 
+                        id={_id} 
+                        data-word={wordFromDb} 
+                        data-translation={translationFromDb} 
+                        ref={insideWordClick} 
+                        onClick={(event) => handleClickEvent(event, _id, wordFromDb, translationFromDb)} 
+                    >
+                            {wordFromDb} 
+                            <span className="translation" >
+                                &nbsp;-&nbsp;{generateTranslationFromDb(translationFromDb)}
+                            </span>
+
+                    </WordFromDb> 
+                </div>
+                <WordFunctions word={wordFromDb} translation={translationFromDb} _id={_id} ref={refEditBttn}/> 
+            </Wrapper>
+
             }
         </>
     )

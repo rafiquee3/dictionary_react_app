@@ -70,7 +70,6 @@ const LoginForm = () => {
         );
         if(status === 200) {
             setWords(data)
-            console.log(data)
         }
         if(data.message) {
             setValidateMessage(data.message);
@@ -78,7 +77,7 @@ const LoginForm = () => {
     }
     const toggleSubmit = async (event) => {
         event.preventDefault();
-        console.log(login)
+    
         const {data, status} = await request.post(
             '/users/find',
             {login, password}

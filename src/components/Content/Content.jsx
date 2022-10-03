@@ -12,9 +12,11 @@ const Main = styled.main`
 `
 
 const Content = () => {
-    const {user, setUser, words, setWords} = useContext(StoreContext);
+    const {user, setUser, words, setWords, testMode, editMode} = useContext(StoreContext);
     const isUserLogged = Boolean(user); 
 
+    console.log('testMode: ' + testMode)
+    console.log('editMode: ' + editMode)
     return (
         <>
             <Main>

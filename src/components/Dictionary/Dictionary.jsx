@@ -13,17 +13,19 @@ const Dictionary = () => {
     const {user, setUser, words, setWords, editedWord, editedTranslation, testMode, setTestMode} = useContext(StoreContext);
 
     const listOfAllWords = words !== null ? 
+
     (words.map(word => 
         <WordWrapper>
-            <Word key={word._id} {...word}></Word>
+            <Word key={word.word} {...word}></Word>
         </WordWrapper>)) 
     : 
         '';
     
     const listOfAllWordsTestMode = words !== null ? 
+
     (words.map(word => 
         <WordWrapper>
-            <Word key={word._id} word={word.translation} translation={word.word} _id={word._id}></Word>
+            <Word key={word.word} word={word.translation} translation={word.word} _id={word._id}></Word>
         </WordWrapper>)) 
     : 
         '';

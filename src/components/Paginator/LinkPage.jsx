@@ -40,15 +40,27 @@ const LinkPage = ({ clickedLinkFn, numberOfPages }) => {
     const generateElements = () => {
         let reactElements = [];
 
-        reactElements.push(React.createElement('li', { onClick: (event) => clickedLinkFn(event, page - 1), className: `li ${ page === 0 ? 'nextPrevBttnDesactive' : ''}` }, `<`))
+        reactElements
+        .push(React.createElement('li', { 
+            onClick: (event) => clickedLinkFn(event, page - 1), 
+            className: `li ${ page === 0 ? 'nextPrevBttnDesactive' : ''}`, 
+            key: `keyPrev`}, `<`))
 
         for (let i = 0; i < numberOfPages; i++) {
-            reactElements.push(React.createElement('li', { onClick: (event) => clickedLinkFn(event, i), className: `li ${i === page ? 'active' : 'desactive'}` }, `${i + 1}`))
+            reactElements
+            .push(React.createElement('li', { 
+                onClick: (event) => clickedLinkFn(event, i), 
+                className: `li ${i === page ? 'active' : 'desactive'}`, 
+                key: `key${i}`}, `${i + 1}`))
         }
 
         const length = reactElements.length - 2; 
 
-        reactElements.push(React.createElement('li', { onClick: (event) => clickedLinkFn(event, page + 1), className: `li ${ page === length ? 'nextPrevBttnDesactive' : ''}` }, `>`))
+        reactElements
+        .push(React.createElement('li', { 
+            onClick: (event) => clickedLinkFn(event, page + 1), 
+            className: `li ${ page === length ? 'nextPrevBttnDesactive' : ''}`, 
+            key: `keyNext` }, `>`))
 
         return reactElements;
     }
