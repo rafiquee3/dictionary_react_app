@@ -30,6 +30,7 @@ const Input = styled.input`
     font-size: 37px;
     border: none;
     text-align: center;
+    letter-spacing: 10px;
 `
 const Error = styled.div`
     display: flex; 
@@ -48,14 +49,19 @@ const Wrapper = styled.div`
 `
 const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
 
+    const hashedValue = wordFromDb.replace(/[A-Za-z'\s]/gi,'_');
+  
     const [word, setWord] = useState(wordFromDb);
     const [translation, setTranslation] = useState(translationFromDb);
     const [translationTestMode, setTranslationTestMode] = useState('')
     const [editModeInTestMode, setEditModeInTestMode] = useState(false);
+    const [oneClickFnCalled, setOneClickFnCalled] = useState(false);
+    const [tempTranslation, setTempTranslation] = useState(hashedValue);
     const wordFromDbRef = useRef(null);
     const insideWordClick = useRef();
     const refEditBttn = useRef(null);
-
+    const inputRef = useRef(null);
+   
     const {
 
         user,
@@ -83,6 +89,21 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
 
     } = useContext(StoreContext);
 
+    const generateTranslationFromDb = (translation) => {
+        if (testMode) {
+            const result = translation
+            .split('')
+            .map(lettre => lettre = '_')
+            .join('');
+
+            return result;
+        }
+
+        return translation;
+    }
+
+ 
+
     const wordHandler = event => {
         setWord(event.target.value);
         setEditedWord(event.target.value);
@@ -94,24 +115,94 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
     }
     
     const translationTestModeHandler = (event, translation) => {
+        const prevStateInput = translationTestMode;
+        
+        console.log(translationTestMode);
+        const initialValueFromInput = event.target.value;
+        let valueFromInput = initialValueFromInput;
+        let result = '';
+
+        console.log('valueFromInput: ' + valueFromInput )
+        const lastLetter = valueFromInput[valueFromInput.length - 1];
+
+        // remove last letter
+        valueFromInput = valueFromInput.slice(0, -1);
+
+        console.log('valueFromInputApresSlice: ' + valueFromInput )
+
+        const howManyHideChars = valueFromInput
+            .split('')
+            .filter(lettre => lettre === '*')
+            .length;
+
+        console.log('ile _' + howManyHideChars)
+
+        const inputValueWithout_ = valueFromInput
+            .split('')
+            .slice(0, initialValueFromInput.length - 1 - howManyHideChars)
+            .join('');
+
+            console.log('wartosc po ucieciu _ : ' + inputValueWithout_)
+
+        let length = inputValueWithout_.length + 1;
+       
+        if (valueFromInput.length === 0){ 
+            length = 1;
+        }
+
+        console.log('length: ' + length)
+
+        const hiddenChars = translation
+            .split('')
+            .slice(length)
+            .map(letter => letter = '*')
+            .join('')
+
+        console.log( 'hiddenChars: ' + hiddenChars)
+
+        
+       
+        result = inputValueWithout_ + lastLetter + hiddenChars;
+      
+        console.log('result: ' + result)
+       console.log(/^[A-Za-z'\s]*$/.test(result));
+
+       const validator = /^[A-Za-z'\s]*$/.test(result);
+
+         // caret position check
+         const currentCaretPos = inputValueWithout_ .length;
+       
+         console.log('curr caret pos: ' + currentCaretPos)
+
+        // reverse mode for delete
+        if (prevStateInput.length > valueFromInput.length) {
+            console.log('reverse mode')
+            console.log('reverse mode input: ' + valueFromInput)
+            const valueFromInputCut = valueFromInput.slice(0, -1);
+            const result = valueFromInputCut + translation.split('').slice(valueFromInput.length).map(letter => letter = '*').join('')
+            console.log(result)
+            setTranslationTestMode(result)
+        return;
+        }
         //setTranslationTestMode('')
         // ile  _
         //  slice
-        const slice_ = event.target.value
-            .split('')
-            .slice(event.target.value.length)
-            .join()
+        console.log('validator: ' + validator)
+        if(event.target.value.length + 1> translation.length  && validator) {
+            console.log('return')
+            console.log(event.target.value)
+            if(valueFromInput[valueFromInput.length - 1] === "*") {
+                setTranslationTestMode(result);
+                
+                console.log('deep')
+            }
+            
+            return;
+        }
 
-        const length = slice_.length;
-
-        const temp = translation
-            .split('')
-            .slice(length)
-            .map(letter => letter = '_')
-            .join()
-        console.log(temp)
-        let result = slice_ + temp;
-        event.target.selectionStart = length;
+        if (validator && event.target.value.length > 1)
+        result = event.target.value
+        
         setTranslationTestMode(result)
     }
 
@@ -119,13 +210,17 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
         setEditedWord(word);
         setEditedTranslation(translation);
     }
-
+    
     const handleClickEvent = (event, id, word, translation) => {
         console.log(event.detail)
         switch (event.detail) {
                 case 1: {
-                    if (testMode) {
+                    if (testMode && !oneClickFnCalled) {
+                        setOneClickFnCalled(true);
+                        setTranslationTestMode(generateTranslationFromDb(translation));
                         setEditModeInTestMode(true);
+                       
+                        //console.log(inputRef.current.selectionStart)
                         break;
                     }
 
@@ -147,21 +242,11 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
           }
     }
 
-    const generateTranslationFromDb = (translation) => {
-        if (testMode) {
-            const result = translation
-            .split('')
-            .map(lettre => lettre = '_')
-            .join('');
 
-            return result;
-        }
-
-        return translation;
-    }
     
     // click outside edit button 
     useEffect(() => {
+        
         const handleClickOutside = (event) => {
             
             //if (wordFromDbRef.current && !wordFromDbRef.current.contains(event.target) ) {
@@ -177,6 +262,7 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
                 }
             } else if (testMode && insideWordClick.current && !insideWordClick.current.contains(event.target)) {
                 setEditModeInTestMode(false);
+                setOneClickFnCalled(false);
             }
         };
         document.addEventListener('click', handleClickOutside, true);
@@ -215,6 +301,14 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
 
     const otherErrors = typeof editedWordErrors !== 'string' ? '' : editedWordErrors;
     console.log('renderuje word')
+    console.log(inputRef)
+    const caretPosition = (event) => {
+        event.target.selectionStart = 0;
+        event.target.selectionEnd = 0;
+        console.log(event.target.selectionStart)
+    }
+
+    console.log(tempTranslation)
     return (
         <>  
             { id === _id && editMode ?
@@ -223,7 +317,7 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
                 <div>    
                     <WordFromDb ref={insideWordClick}>      
                         <Input value={editedWord} onChange={wordHandler}/>
-                        <Input value={editedTranslation} onChange={translationHandler}/>
+                        <Input value={editedTranslation} onChange={translationHandler} autoFocus/>
                     </WordFromDb>
                     <Error><p>{errorWord}</p><p>{errorTranslation}</p><p>{otherErrors}</p></Error>
                 </div>   
@@ -248,7 +342,21 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
                                 {wordFromDb} 
                                 <span className="translation" >
                                     &nbsp;-&nbsp;
-                                    <Input value={translationTestMode} onChange={(event) => translationTestModeHandler(event, translationFromDb)}></Input>
+                                    <Input value={tempTranslation} 
+
+                                        onClick={addEventListener('keyup', e => {
+                                            //e.target.selectionStart = 0
+                                            console.log('Caret at: ', e.target.selectionStart)
+                                            
+                                            //e.target.selectionStart = ++indexTest;
+                                        })} 
+                                        onChange={(event) => translationTestModeHandler(event, translationFromDb)}
+                                        ref={inputRef}
+                                        onFocus={caretPosition}
+                                        autoFocus
+                                        >
+                                        
+                                    </Input>
                                 </span>
                             </div>
                             :
