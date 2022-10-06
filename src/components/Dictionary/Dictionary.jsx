@@ -11,7 +11,7 @@ const WordWrapper = styled.div`
 
 const Dictionary = () => {
     const {user, setUser, words, setWords, editedWord, editedTranslation, testMode, setTestMode} = useContext(StoreContext);
-
+    
     const listOfAllWords = words !== null ? 
 
     (words.map(word => 
@@ -29,7 +29,8 @@ const Dictionary = () => {
         </WordWrapper>)) 
     : 
         '';
-
+    
+    console.log('Dictionary renderind')    
     return (
         <>
             <Paginator howMany={5}>

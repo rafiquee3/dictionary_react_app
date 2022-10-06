@@ -118,17 +118,26 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
     }
     
     const translationTestModeHandler = (event, translation) => {
-
+        
         setTempTranslation(event.target.value);
-
-        const indexOfChange = event.target.selectionStart - 1;
+        
+        let indexOfChange = event.target.selectionStart - 1;
         const initialValueFromInputArr = event.target.value.split('');
-        const prevStateInputArr = translationTestMode.split('');
+        let prevStateInputArr = translationTestMode.split('');
         const charToReplace = event.nativeEvent.data;
-        
+
         prevStateInputArr[indexOfChange] = charToReplace;
+
+        if (prevStateInputArr.length > translation.length)
+        prevStateInputArr.pop();
+
+        if (caretPositionState === translation.length) {
+            indexOfChange = indexOfChange - 1;
+        }
+
+       // console.log('caret Pos: ' + caretPositionState)
         const result = prevStateInputArr.join(''); 
-        
+
         setTranslationTestMode(result)
         setTempTranslation(result);
         setCaretPositionState(indexOfChange + 1); 
@@ -140,7 +149,7 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
     }
     
     const handleClickEvent = (event, id, word, translation) => {
-        //console.log(event.detail)
+        console.log('handle click event')
         switch (event.detail) {
                 case 1: {
                     if (testMode && !oneClickFnCalled) {
@@ -167,10 +176,6 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
           }
     }
 
-    const inputOnClickHandler = (event) => {
-       
-    }
-
     const caretPosition = (event) => {
        
         event.target.selectionStart = caretPositionState;
@@ -182,15 +187,17 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
     useEffect(() => {
         
         const handleClickOutside = (event) => {
-            
+            console.log('handleOutside Click')
             if (!testMode) {
                 if (insideWordClick.current && !insideWordClick.current.contains(event.target) && !refEditBttn.current.ref.contains(event.target)) {
                     console.log('outside click')
+                    console.log('translation in outsideClick: ' + wordFromDb)
                     setEditMode(false);
                     setOutsideEditBttnClick(true);
                     refEditBttn.current.setIsEditBttnClicked();
                 }
             } else if (testMode && insideWordClick.current && !insideWordClick.current.contains(event.target)) {
+                console.log('else clisk sajdhasdjh')
                 setEditModeInTestMode(false);
                 setOneClickFnCalled(false);
             }
@@ -211,7 +218,7 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
 
     const otherErrors = typeof editedWordErrors !== 'string' ? '' : editedWordErrors;
     console.log('renderuje word')
-    
+    console.log('insideWordClick REF: ' + insideWordClick.current)
     return (
         <>  
             { id === _id && editMode ?
@@ -220,7 +227,7 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
                 <div>    
                     <WordFromDb ref={insideWordClick}>      
                         <Input value={editedWord} onChange={wordHandler}/>
-                        <Input value={editedTranslation} onChange={translationHandler} autoFocus/>
+                        <Input value={editedTranslation} onChange={translationHandler} />
                     </WordFromDb>
                     <Error><p>{errorWord}</p><p>{errorTranslation}</p><p>{otherErrors}</p></Error>
                 </div>   
@@ -246,19 +253,15 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
                                 {wordFromDb} 
                                 <span className="translation" >
                                     &nbsp;-&nbsp;
-                                    <InputTest value={translationTestMode} 
-
-                                        onClick={ (event) => {
-                                            addEventListener('keyup', event => {
-                                            event.target.selectionStart = caretPositionState;
-                                            event.target.selectionEnd = caretPositionState;
-                                            console.log('fromOnClick tar: ' + event.target.value)
-                                            console.log('fromOnClick temp: ' + translationTestMode)
-                                        })}} 
-                                        onChange={(event) => translationTestModeHandler(event, translationFromDb)}
+                                    <InputTest 
+                                        value={translationTestMode} 
+                                        inititalValue={translationFromDb}
+                                        caret={caretPositionState}
+                                        setCaret={setCaretPositionState}
+                                        translationTestMode={translationTestMode}
+                                        translationTestModeHandler={translationTestModeHandler}
                                         ref={inputRef}
-                                        onFocus={caretPosition}
-                                        autoFocus
+                                        focus={caretPosition}   
                                     />
                                 </span>
                             </div>
