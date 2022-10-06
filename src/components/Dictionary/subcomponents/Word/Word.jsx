@@ -61,7 +61,7 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
     const [caretPositionState, setCaretPositionState] = useState(0);
     const [refreshTempValue, setRefreshTempValue] = useState(false);
     const wordFromDbRef = useRef(null);
-    const insideWordClick = useRef();
+    const insideWordClick = useRef(null);
     const refEditBttn = useRef(null);
     const inputRef = useRef(null);
    
@@ -189,7 +189,7 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
         const handleClickOutside = (event) => {
             console.log('handleOutside Click')
             if (!testMode) {
-                if (insideWordClick.current && !insideWordClick.current.contains(event.target) && !refEditBttn.current.ref.contains(event.target)) {
+                if (wordFromDbRef.current && !wordFromDbRef.current.contains(event.target) && !refEditBttn.current.ref.contains(event.target)) {
                     console.log('outside click')
                     console.log('translation in outsideClick: ' + wordFromDb)
                     setEditMode(false);
@@ -225,7 +225,10 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
            
             <Wrapper>
                 <div>    
-                    <WordFromDb ref={insideWordClick}>      
+                    <WordFromDb 
+                    ref={wordFromDbRef}
+                    onClick={(event) => handleClickEvent(event, _id, wordFromDb, translationFromDb)} 
+                    >      
                         <Input value={editedWord} onChange={wordHandler}/>
                         <Input value={editedTranslation} onChange={translationHandler} />
                     </WordFromDb>
