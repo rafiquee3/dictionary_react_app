@@ -25,7 +25,7 @@ const Dictionary = () => {
 
     (words.map(word => 
         <WordWrapper>
-            <Word key={word.word} word={word.translation} translation={word.word} _id={word._id} all={{...word}}></Word>
+            <Word key={word.word} {...word} initial={{...word}}></Word>
         </WordWrapper>)) 
     : 
         '';

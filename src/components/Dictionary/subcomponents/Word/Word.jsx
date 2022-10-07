@@ -48,53 +48,35 @@ const Wrapper = styled.div`
     align-items: center;
     
 `
-const Word = ({ word: wordFromDb, translation: translationFromDb, _id, all }) => {
+const Word = ({ word, translation, _id, initial }) => {
     
-    const hiddenValue = wordFromDb.replace(/[A-Za-z'\s]/gi,'*');
+    //const hiddenValue = wordFromDb.replace(/[A-Za-z'\s]/gi,'*');
     
-    const [tempTranslation, setTempTranslation] = useState(translationFromDb);
-   
-    const [editModeInTestMode, setEditModeInTestMode] = useState(false);
-    const [oneClickFnCalled, setOneClickFnCalled] = useState(false);
-
-    const wordFromDbRef = useRef(null);
-    const insideWordClick = useRef(null);
-    const refEditBttn = useRef(null);
-   
-  
-    console.log('word: ' + wordFromDb )
-    console.log('translation: ' + translationFromDb)
-    console.log('translationTemp: ' + tempTranslation) 
-
     const {
 
-            id,
-            setId,
-            editedWord,
-            editMode,
-            setEditMode,
-            testMode,
-            setTestMode, 
-            setEditedWord,
-            page, 
-            setPage,
-            editedTranslation,
-            setEditedTranslation,
-            outsideEditBttnClick,
-            setOutsideEditBttnClick,
-            isEditBttnClicked, 
-            setIsEditBttnClicked,
-            callback,
-            setCallback,
-            editedWordErrors,
-            setEditedWordErrors,
-            tempTranslationTestInput, 
+        id,
+        setId,
+        editedWord,
+        editMode,
+        setEditMode,
+        testMode,
+        setTestMode, 
+        setEditedWord,
+        page, 
+        setPage,
+        editedTranslation,
+        setEditedTranslation,
+        outsideEditBttnClick,
+        setOutsideEditBttnClick,
+        isEditBttnClicked, 
+        setIsEditBttnClicked,
+        callback,
+        setCallback,
+        editedWordErrors,
+        setEditedWordErrors,
+        tempTranslationTestInput, 
 
     } = useContext(StoreContext);
-
-    if (tempTranslation === wordFromDb && testMode) {
-        setTempTranslation(all.word);
-    }
 
     const generateTranslationFromDb = (translation) => {
 
@@ -111,17 +93,32 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id, all }) =>
         return translation;
     }
 
+    if (testMode) {
+        word = initial.translation;
+        translation = generateTranslationFromDb(initial.word);
+    }
+
+    const [tempTranslation, setTempTranslation] = useState(translation);
+    const [editModeInTestMode, setEditModeInTestMode] = useState(false);
+    const [oneClickFnCalled, setOneClickFnCalled] = useState(false);
+
+    const wordFromDbRef = useRef(null);
+    const insideWordClick = useRef(null);
+    const refEditBttn = useRef(null);
+
+    if (tempTranslation === word && testMode) {
+        setTempTranslation(generateTranslationFromDb(initial.word));
+    } 
+
     const wordHandler = event => {
-        //setWord(event.target.value);
         setEditedWord(event.target.value);
     }
 
     const translationHandler = event => {
-        //setTranslation(event.target.value);
         setEditedTranslation(event.target.value);
     }
 
-    const setInitialValue = (word = wordFromDb, translation = translationFromDb) => {
+    const setInitialValue = (word = word, translation = translation) => {
         setEditedWord(word);
         setEditedTranslation(translation);
     }
@@ -162,7 +159,7 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id, all }) =>
             if (!testMode) {
                 if (wordFromDbRef.current && !wordFromDbRef.current.contains(event.target) && !refEditBttn.current.ref.contains(event.target)) {
                     console.log('outside click')
-                    console.log('translation in outsideClick: ' + wordFromDb)
+                    //console.log('translation in outsideClick: ' + wordFromDb)
                     setEditMode(false);
                     setOutsideEditBttnClick(true);
                     refEditBttn.current.setIsEditBttnClicked();
@@ -197,14 +194,14 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id, all }) =>
                 <div>    
                     <WordFromDb 
                     ref={wordFromDbRef}
-                    onClick={(event) => handleClickEvent(event, _id, wordFromDb, translationFromDb)} 
+                    onClick={(event) => handleClickEvent(event, _id, word, translation)} 
                     >      
                         <Input value={editedWord} onChange={wordHandler}/>
                         <Input value={editedTranslation} onChange={translationHandler} />
                     </WordFromDb>
                     <Error><p>{errorWord}</p><p>{errorTranslation}</p><p>{otherErrors}</p></Error>
                 </div>   
-                { testMode ? '' : <WordFunctions word={wordFromDb} translation={translationFromDb} _id={_id} ref={refEditBttn}/>} 
+                { testMode ? '' : <WordFunctions word={word} translation={translation} _id={_id} ref={refEditBttn}/>} 
             </Wrapper>
                 
             : testMode ?
@@ -214,7 +211,7 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id, all }) =>
                     <WordFromDb 
                        
                         ref={insideWordClick} 
-                        onClick={(event) => handleClickEvent(event, _id, wordFromDb, translationFromDb)} 
+                        onClick={(event) => handleClickEvent(event, _id, word, translation)} 
                         width={testMode ? "800px" : ''} 
                         spacing={testMode ? '10px' : ''}
                         >
@@ -222,17 +219,17 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id, all }) =>
                             { editModeInTestMode ? 
 
                             <div>
-                                {wordFromDb} 
+                                {word} 
                                 <span className="translation" >
                                     &nbsp;-&nbsp;
-                                    <InputTest setTempTranslation={setTempTranslation} tempTranslation={tempTranslation} inititalValue={translationFromDb} />
+                                    <InputTest setTempTranslation={setTempTranslation} tempTranslation={tempTranslation} inititalValue={translation} />
                                 </span>
                             </div>
 
                             :
 
                             <div>
-                                {wordFromDb} 
+                                {word} 
                                 <span className="translation" >
                                     &nbsp;-&nbsp;{tempTranslation}
                                 </span>
@@ -248,19 +245,18 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id, all }) =>
                 <div>
                     <WordFromDb 
                       
-                        data-word={wordFromDb} 
-                        data-translation={translationFromDb} 
+                       
                         ref={insideWordClick} 
-                        onClick={(event) => handleClickEvent(event, _id, wordFromDb, translationFromDb)} 
+                        onClick={(event) => handleClickEvent(event, _id, word, translation)} 
                     >
-                            {wordFromDb} 
+                            {word} 
                             <span className="translation" >
-                                &nbsp;-&nbsp;{generateTranslationFromDb(translationFromDb)}
+                                &nbsp;-&nbsp;{generateTranslationFromDb(translation)}
                             </span>
 
                     </WordFromDb> 
                 </div>
-                <WordFunctions word={wordFromDb} translation={translationFromDb} _id={_id} ref={refEditBttn}/> 
+                <WordFunctions word={word} translation={translation} _id={_id} ref={refEditBttn}/> 
             </Wrapper>
 
             }
