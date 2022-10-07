@@ -51,44 +51,40 @@ const Wrapper = styled.div`
 const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
 
     const hashedValue = wordFromDb.replace(/[A-Za-z'\s]/gi,'*');
-  
+    
+    // used in edit mode
     const [word, setWord] = useState(wordFromDb);
     const [translation, setTranslation] = useState(translationFromDb);
-    const [translationTestMode, setTranslationTestMode] = useState(hashedValue);
+
     const [tempTranslation, setTempTranslation] = useState(hashedValue);
     const [editModeInTestMode, setEditModeInTestMode] = useState(false);
     const [oneClickFnCalled, setOneClickFnCalled] = useState(false);
-    const [caretPositionState, setCaretPositionState] = useState(0);
-    const [refreshTempValue, setRefreshTempValue] = useState(false);
+
     const wordFromDbRef = useRef(null);
     const insideWordClick = useRef(null);
     const refEditBttn = useRef(null);
-    const inputRef = useRef(null);
    
     const {
 
-        user,
-        setUser,
-        words,
-        setWords,
-        id,
-        setId,
-        editedWord,
-        editMode,
-        setEditMode,
-        testMode,
-        setTestMode, 
-        setEditedWord,
-        editedTranslation,
-        setEditedTranslation,
-        outsideEditBttnClick,
-        setOutsideEditBttnClick,
-        isEditBttnClicked, 
-        setIsEditBttnClicked,
-        callback,
-        setCallback,
-        editedWordErrors,
-        setEditedWordErrors,
+            id,
+            setId,
+            editedWord,
+            editMode,
+            setEditMode,
+            testMode,
+            setTestMode, 
+            setEditedWord,
+            editedTranslation,
+            setEditedTranslation,
+            outsideEditBttnClick,
+            setOutsideEditBttnClick,
+            isEditBttnClicked, 
+            setIsEditBttnClicked,
+            callback,
+            setCallback,
+            editedWordErrors,
+            setEditedWordErrors,
+            tempTranslationTestInput, 
 
     } = useContext(StoreContext);
 
@@ -116,38 +112,12 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
         setTranslation(event.target.value);
         setEditedTranslation(event.target.value);
     }
-    
-    const translationTestModeHandler = (event, translation) => {
-        
-        setTempTranslation(event.target.value);
-        
-        let indexOfChange = event.target.selectionStart - 1;
-        const initialValueFromInputArr = event.target.value.split('');
-        let prevStateInputArr = translationTestMode.split('');
-        const charToReplace = event.nativeEvent.data;
-
-        prevStateInputArr[indexOfChange] = charToReplace;
-
-        if (prevStateInputArr.length > translation.length)
-        prevStateInputArr.pop();
-
-        if (caretPositionState === translation.length) {
-            indexOfChange = indexOfChange - 1;
-        }
-
-       // console.log('caret Pos: ' + caretPositionState)
-        const result = prevStateInputArr.join(''); 
-
-        setTranslationTestMode(result)
-        setTempTranslation(result);
-        setCaretPositionState(indexOfChange + 1); 
-    }
 
     const setInitialValue = (word = wordFromDb, translation = translationFromDb) => {
         setEditedWord(word);
         setEditedTranslation(translation);
     }
-    
+
     const handleClickEvent = (event, id, word, translation) => {
         console.log('handle click event')
         switch (event.detail) {
@@ -174,13 +144,6 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
                     break;
                 }     
           }
-    }
-
-    const caretPosition = (event) => {
-       
-        event.target.selectionStart = caretPositionState;
-        event.target.selectionEnd = caretPositionState;
-
     }
     
     // click outside edit button 
@@ -218,7 +181,7 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
 
     const otherErrors = typeof editedWordErrors !== 'string' ? '' : editedWordErrors;
     console.log('renderuje word')
-    console.log('insideWordClick REF: ' + insideWordClick.current)
+
     return (
         <>  
             { id === _id && editMode ?
@@ -242,9 +205,7 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
             <Wrapper>
                 <div>
                     <WordFromDb 
-                        id={_id} 
-                        data-word={wordFromDb} 
-                        data-translation={translationFromDb} 
+                       
                         ref={insideWordClick} 
                         onClick={(event) => handleClickEvent(event, _id, wordFromDb, translationFromDb)} 
                         width={testMode ? "800px" : ''} 
@@ -256,16 +217,7 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
                                 {wordFromDb} 
                                 <span className="translation" >
                                     &nbsp;-&nbsp;
-                                    <InputTest 
-                                        value={translationTestMode} 
-                                        inititalValue={translationFromDb}
-                                        caret={caretPositionState}
-                                        setCaret={setCaretPositionState}
-                                        translationTestMode={translationTestMode}
-                                        translationTestModeHandler={translationTestModeHandler}
-                                        ref={inputRef}
-                                        focus={caretPosition}   
-                                    />
+                                    <InputTest setTempTranslation={setTempTranslation} tempTranslation={tempTranslation} inititalValue={translationFromDb} />
                                 </span>
                             </div>
                             :
@@ -285,7 +237,7 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
             <Wrapper>
                 <div>
                     <WordFromDb 
-                        id={_id} 
+                      
                         data-word={wordFromDb} 
                         data-translation={translationFromDb} 
                         ref={insideWordClick} 

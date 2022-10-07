@@ -1,68 +1,66 @@
-import React, { useEffect, forwardRef, useState } from "react";
+import React, { useContext, useEffect, forwardRef, useState } from "react";
 import styled, { css } from 'styled-components';
+import InputMask from 'react-input-mask';
+import { StoreContext } from "../../../../store/StoreProvider";
 
-const Input = styled.input`
-    background: #9584DB;
-    border: 1px solid white;
-    color: black;
-    font-size: 37px;
-    border: none;
-    text-align: center;
-    letter-spacing: 10px;
+const Input = styled.div`
+    display: inline-block;
+    .inputTest {
+        background: #9584DB;
+        border: 1px solid white;
+        color: black;
+        font-size: 37px;
+        border: none;
+        text-align: center;
+        letter-spacing: 10px;
+    }
 `
 
-const InputTest = ({ caret, inititalValue, setCaret, translationTestMode, translationTestModeHandler, value, focus }, ref) => {
-    const [leftScope, setLeftScope] = useState(0);
-    const [rightScope, setRightScope] = useState(0);
+const InputTest = ({ inititalValue, tempTranslation, setTempTranslation }) => {
 
-    const setScope = () => {
-        const length = value.length;
-        let right_scope = value.split('').slice(caret).length;
-        const left_scope = length - right_scope;
-        
-        setLeftScope(left_scope);
-        setRightScope(right_scope);
-    }
+    const {
+
+            user,
+            setUser,
+            words,
+            setWords,
+            id,
+            setId,
+            editedWord,
+            editMode,
+            setEditMode,
+            testMode,
+            setTestMode, 
+            setEditedWord,
+            editedTranslation,
+            setEditedTranslation,
+            outsideEditBttnClick,
+            setOutsideEditBttnClick,
+            isEditBttnClicked, 
+            setIsEditBttnClicked,
+            callback,
+            setCallback,
+            editedWordErrors,
+            setEditedWordErrors,
+            tempTranslationTestInput, 
+            setTempTranslationTestInput,
+
+    } = useContext(StoreContext);
     
-    const keyUpHandler = (event) => {
-        event.target.selectionStart = caret;
-        event.target.selectionEnd = caret;
-        console.log('fromOnClick tar: ' + event.target.value)
-        console.log('fromOnClick temp: ' + translationTestMode)
+    const inputHandler = (event) => {
 
-        if (event.code === 'ArrowLeft') {
-            if(leftScope > 0) {
-                setCaret(caret - 1);
-            // ++scope;
-                event.target.selectionStart = caret - 1;
-                event.target.selectionEnd = caret - 1;
-            }
-        }
-
-        if (event.code === 'ArrowRight') {
-            if(rightScope > 0) {
-                setCaret(caret + 1);
-                event.target.selectionStart = caret + 1;
-                event.target.selectionEnd = caret + 1;
-            }
-        }
-        //console.log('montuje inputa')
+        if(event.target.value)
+        setTempTranslation(event.target.value);
     }
 
-    useEffect(() => {
-        setScope();
-    }, [caret]);
-
+    const mask = [];
+    inititalValue.split('').map(value => mask.push('c'));
+    
     return (
-        
-            <Input value={value}
-                onChange={(event) => translationTestModeHandler(event, inititalValue)}
-                ref={ref} 
-                onFocus={focus}
-                onKeyUp={(event) => keyUpHandler(event)}
-                autoFocus
-            ></Input>
+            <Input>
+                <InputMask className="inputTest" mask={mask.join('')} formatChars={{'c': '[a-z\']'}} value={tempTranslation} onChange={inputHandler} autoFocus></InputMask>
+            </Input>
         
     )
 }
-export default forwardRef(InputTest);
+export default InputTest;

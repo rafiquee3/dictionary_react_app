@@ -13,6 +13,7 @@ const StoreProvider = ({children}) => {
     const [isEditBttnClicked, setIsEditBttnClicked] = useState(false);
     const [page, setPage] = useState(0);
     const [testMode, setTestMode] = useState(false);
+    const [tempTranslationTestInput, setTempTranslationTestInput] = useState('');
 
     return (
         <StoreContext.Provider value={
@@ -39,6 +40,8 @@ const StoreProvider = ({children}) => {
                 setPage,
                 testMode, 
                 setTestMode,
+                tempTranslationTestInput, 
+                setTempTranslationTestInput,
             }
         }>
             {children}
