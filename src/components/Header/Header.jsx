@@ -26,15 +26,23 @@ const Button = styled.button`
     padding: 15px;
     color: black;
 `
+
 const Header = () => {
-    const { testMode, setTestMode } = useContext(StoreContext);
+    const { testMode, setTestMode, page, setPage} = useContext(StoreContext);
+    
+    const handleOnClick = () => {
+        setTestMode(!testMode);
+        //setPage(0);
+       // setPage(0);
+        
+    }
     
     return (
         <>
             <Wrapper>
                 <p>Dictionary</p>
                 <AddWordForm />
-                <Button onClick={() => setTestMode(!testMode)}> { testMode ? 'results' : 'test'} </Button>
+                <Button onClick={handleOnClick}> { testMode ? 'results' : 'test'} </Button>
                 <LoginForm />
             </Wrapper>
         </>

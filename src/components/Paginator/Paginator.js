@@ -17,7 +17,7 @@ const Paginator = ({ howMany, children}) => {
             allSlice.push(slice);
         }
         if (allSlice[i] !== undefined) allSlice[i].reverse();
-
+        console.log(allSlice[i])
         return allSlice[i];
     }
 
@@ -29,7 +29,7 @@ const Paginator = ({ howMany, children}) => {
 
     const currentPage = page;
     const currentElem = showPage(currentPage);
-
+    
     return (
         <>
             { showPage(page) !== undefined ? currentElem : page === 0 ? 'Add new word' : setPage(page - 1) }

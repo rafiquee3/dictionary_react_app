@@ -48,15 +48,12 @@ const Wrapper = styled.div`
     align-items: center;
     
 `
-const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
-
-    const hashedValue = wordFromDb.replace(/[A-Za-z'\s]/gi,'*');
+const Word = ({ word: wordFromDb, translation: translationFromDb, _id, all }) => {
     
-    // used in edit mode
-    const [word, setWord] = useState(wordFromDb);
-    const [translation, setTranslation] = useState(translationFromDb);
-
-    const [tempTranslation, setTempTranslation] = useState(hashedValue);
+    const hiddenValue = wordFromDb.replace(/[A-Za-z'\s]/gi,'*');
+    
+    const [tempTranslation, setTempTranslation] = useState(translationFromDb);
+   
     const [editModeInTestMode, setEditModeInTestMode] = useState(false);
     const [oneClickFnCalled, setOneClickFnCalled] = useState(false);
 
@@ -64,6 +61,11 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
     const insideWordClick = useRef(null);
     const refEditBttn = useRef(null);
    
+  
+    console.log('word: ' + wordFromDb )
+    console.log('translation: ' + translationFromDb)
+    console.log('translationTemp: ' + tempTranslation) 
+
     const {
 
             id,
@@ -74,6 +76,8 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
             testMode,
             setTestMode, 
             setEditedWord,
+            page, 
+            setPage,
             editedTranslation,
             setEditedTranslation,
             outsideEditBttnClick,
@@ -87,6 +91,10 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
             tempTranslationTestInput, 
 
     } = useContext(StoreContext);
+
+    if (tempTranslation === wordFromDb && testMode) {
+        setTempTranslation(all.word);
+    }
 
     const generateTranslationFromDb = (translation) => {
 
@@ -104,12 +112,12 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
     }
 
     const wordHandler = event => {
-        setWord(event.target.value);
+        //setWord(event.target.value);
         setEditedWord(event.target.value);
     }
 
     const translationHandler = event => {
-        setTranslation(event.target.value);
+        //setTranslation(event.target.value);
         setEditedTranslation(event.target.value);
     }
 
@@ -180,8 +188,7 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
     .map(message => <p key={message.error}>{message.field}: {message.error}</p>) : '';
 
     const otherErrors = typeof editedWordErrors !== 'string' ? '' : editedWordErrors;
-    console.log('renderuje word')
-
+    
     return (
         <>  
             { id === _id && editMode ?
@@ -213,6 +220,7 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
                         >
 
                             { editModeInTestMode ? 
+
                             <div>
                                 {wordFromDb} 
                                 <span className="translation" >
@@ -220,7 +228,9 @@ const Word = ({ word: wordFromDb, translation: translationFromDb, _id }) => {
                                     <InputTest setTempTranslation={setTempTranslation} tempTranslation={tempTranslation} inititalValue={translationFromDb} />
                                 </span>
                             </div>
+
                             :
+
                             <div>
                                 {wordFromDb} 
                                 <span className="translation" >

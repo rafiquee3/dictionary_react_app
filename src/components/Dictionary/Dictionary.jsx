@@ -25,12 +25,13 @@ const Dictionary = () => {
 
     (words.map(word => 
         <WordWrapper>
-            <Word key={word.word} word={word.translation} translation={word.word} _id={word._id}></Word>
+            <Word key={word.word} word={word.translation} translation={word.word} _id={word._id} all={{...word}}></Word>
         </WordWrapper>)) 
     : 
         '';
     
-    console.log('Dictionary renderind')    
+    console.log('Dictionary renderind') 
+    //console.log(words)     
     return (
         <>
             <Paginator howMany={5}>
