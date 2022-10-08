@@ -109,7 +109,7 @@ const Word = ({ word, translation, _id, initial }) => {
         if (tempTranslation === word && testMode || tempTranslation !== translation) { //|| word !== initial.word && testMode) {
             setTempTranslation(generateTranslationFromDb(initial.word));
         } 
-    }    
+    }     
 
     const wordHandler = event => {
         setEditedWord(event.target.value);
@@ -125,7 +125,7 @@ const Word = ({ word, translation, _id, initial }) => {
     }
 
     const handleClickEvent = (event, id, word, translation) => {
-      
+        console.log('handle click event')
         switch (event.detail) {
                 case 1: {
                     if (testMode && !oneClickFnCalled) {
@@ -133,7 +133,6 @@ const Word = ({ word, translation, _id, initial }) => {
                         setEditModeInTestMode(true);
                         break;
                     }
-
                     break;
                 } 
 
@@ -143,7 +142,10 @@ const Word = ({ word, translation, _id, initial }) => {
                     if (!testMode) {
                         setId(id);
                         setEditMode(true);
+
+                        if(editedWord === '' && editedTranslation === '')
                         setInitialValue(word, translation);
+
                         setIsEditBttnClicked(true);
                         break;
                     }
