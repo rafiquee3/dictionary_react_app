@@ -8,16 +8,20 @@ const Input = styled.div`
     .inputTest {
         background: #9584DB;
         border: 1px solid white;
-        color: black;
+        color: ${props => props.color};
         font-size: 37px;
         border: none;
         text-align: center;
         letter-spacing: 10px;
+
+        ::current {
+            color: red;
+          }
     }
 `
 
-const InputTest = ({ inititalValue, tempTranslation, setTempTranslation }) => {
-
+const InputTest = ({ inititalValue, tempTranslation, setTempTranslation, initialTranslation, setBorderColor }) => {
+    const [txtColor, setTxtColor] = useState('black');
     const {
 
             user,
@@ -49,15 +53,27 @@ const InputTest = ({ inititalValue, tempTranslation, setTempTranslation }) => {
     
     const inputHandler = (event) => {
 
-        if(event.target.value)
-        setTempTranslation(event.target.value);
+        const typedInput = event.target.value;
+        
+        if(typedInput)
+        setTempTranslation(typedInput);
+
+       
+        if(typedInput === initialTranslation){
+            setTxtColor('green');
+            setBorderColor('green');
+        } else {
+            setTxtColor('black');
+            setBorderColor('#7E5675');
+        }
+
     }
 
     const mask = [];
     inititalValue.split('').map(value => mask.push('c'));
     
     return (
-            <Input>
+            <Input color={txtColor}>
                 <InputMask 
                     className="inputTest" 
                     mask={mask.join('')} 

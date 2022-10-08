@@ -16,7 +16,7 @@ const Dictionary = () => {
 
     (words.map(word => 
         <WordWrapper>
-            <Word key={word.word} {...word}></Word>
+            <Word key={word.word} {...word} initial={{...word}}></Word>
         </WordWrapper>)) 
     : 
         '';
@@ -30,8 +30,6 @@ const Dictionary = () => {
     : 
         '';
     
-    console.log('Dictionary renderind') 
-    //console.log(words)     
     return (
         <>
             <Paginator howMany={5}>

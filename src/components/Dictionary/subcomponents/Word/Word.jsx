@@ -15,6 +15,7 @@ const WordFromDb = styled.div`
     color: white;
     font-size: 37px;
     border-radius: 12px;
+    border: 8px solid ${props => props.borderColor || "#7E5675"};
     margin: 10px;
     white-space: nowrap;
     overflow: hidden;
@@ -100,6 +101,7 @@ const Word = ({ word, translation, _id, initial }) => {
     const [editModeInTestMode, setEditModeInTestMode] = useState(false);
     const [oneClickFnCalled, setOneClickFnCalled] = useState(false);
     const [wordHasBeenEditedInTestMode, setWordHasBeenEditedInTestMode] = useState(false);
+    const [borderColor, setBorderColor] = useState('');
 
     const wordFromDbRef = useRef(null);
     const insideWordClick = useRef(null);
@@ -196,8 +198,8 @@ const Word = ({ word, translation, _id, initial }) => {
             <Wrapper>
                 <div>    
                     <WordFromDb 
-                    ref={wordFromDbRef}
-                    onClick={(event) => handleClickEvent(event, _id, word, translation)} 
+                        ref={wordFromDbRef}
+                        onClick={(event) => handleClickEvent(event, _id, word, translation)} 
                     >      
                         <Input value={editedWord} onChange={wordHandler}/>
                         <Input value={editedTranslation} onChange={translationHandler} />
@@ -216,6 +218,7 @@ const Word = ({ word, translation, _id, initial }) => {
                         onClick={(event) => handleClickEvent(event, _id, word, translation)} 
                         width={testMode ? "800px" : ''} 
                         spacing={testMode ? '10px' : ''}
+                        borderColor={borderColor}
                         >
 
                             { editModeInTestMode ? 
@@ -228,7 +231,8 @@ const Word = ({ word, translation, _id, initial }) => {
                                         setTempTranslation={setTempTranslation} 
                                         tempTranslation={tempTranslation} 
                                         inititalValue={translation}
-                                        setWordHasBeenEditedInTestMode={setWordHasBeenEditedInTestMode} 
+                                        initialTranslation={initial.word}
+                                        setBorderColor={setBorderColor}
                                     />
                                 </span>
                             </div>
