@@ -16,7 +16,7 @@ const Input = styled.div`
     }
 `
 
-const InputTest = ({ inititalValue, tempTranslation, setTempTranslation, setEditModeInTestMode }) => {
+const InputTest = ({ inititalValue, tempTranslation, setTempTranslation }) => {
 
     const {
 
@@ -70,4 +70,4 @@ const InputTest = ({ inititalValue, tempTranslation, setTempTranslation, setEdit
         
     )
 }
-export default InputTest;
+export default React.memo(InputTest);

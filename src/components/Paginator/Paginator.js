@@ -17,7 +17,7 @@ const Paginator = ({ howMany, children}) => {
             allSlice.push(slice);
         }
         if (allSlice[i] !== undefined) allSlice[i].reverse();
-        console.log(allSlice[i])
+      
         return allSlice[i];
     }
 

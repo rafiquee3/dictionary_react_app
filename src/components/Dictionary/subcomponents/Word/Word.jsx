@@ -99,14 +99,16 @@ const Word = ({ word, translation, _id, initial }) => {
     const [tempTranslation, setTempTranslation] = useState(translation);
     const [editModeInTestMode, setEditModeInTestMode] = useState(false);
     const [oneClickFnCalled, setOneClickFnCalled] = useState(false);
+    const [wordHasBeenEditedInTestMode, setWordHasBeenEditedInTestMode] = useState(false);
 
     const wordFromDbRef = useRef(null);
     const insideWordClick = useRef(null);
     const refEditBttn = useRef(null);
 
     // to fix bug with firts render in test mode
-    if (testMode){
-        if (tempTranslation === word && testMode || tempTranslation !== translation) { //|| word !== initial.word && testMode) {
+    if (testMode && !editModeInTestMode){
+        if (tempTranslation === word || tempTranslation !== translation) { 
+            if(!wordHasBeenEditedInTestMode)
             setTempTranslation(generateTranslationFromDb(initial.word));
         } 
     }     
@@ -125,12 +127,13 @@ const Word = ({ word, translation, _id, initial }) => {
     }
 
     const handleClickEvent = (event, id, word, translation) => {
-        console.log('handle click event')
+       
         switch (event.detail) {
                 case 1: {
                     if (testMode && !oneClickFnCalled) {
                         setOneClickFnCalled(true);
                         setEditModeInTestMode(true);
+                        setWordHasBeenEditedInTestMode(true)
                         break;
                     }
                     break;
@@ -158,17 +161,14 @@ const Word = ({ word, translation, _id, initial }) => {
     useEffect(() => {
         
         const handleClickOutside = (event) => {
-            console.log('handleOutside Click')
+          
             if (!testMode) {
                 if (wordFromDbRef.current && !wordFromDbRef.current.contains(event.target) && !refEditBttn.current.ref.contains(event.target)) {
-                    console.log('outside click')
-                    //console.log('translation in outsideClick: ' + wordFromDb)
                     setEditMode(false);
                     setOutsideEditBttnClick(true);
                     refEditBttn.current.setIsEditBttnClicked();
                 }
             } else if (testMode && insideWordClick.current && !insideWordClick.current.contains(event.target)) {
-                console.log('else clisk sajdhasdjh')
                 setEditModeInTestMode(false);
                 setOneClickFnCalled(false);
             }
@@ -177,7 +177,7 @@ const Word = ({ word, translation, _id, initial }) => {
         return () => {
             document.removeEventListener('click', handleClickOutside, true); 
         };
-    }, [testMode]);
+    }, [tempTranslation]);
 
     const errorWord = typeof editedWordErrors !== 'string' ? editedWordErrors
     .filter(message => message.field === "word")
@@ -188,7 +188,7 @@ const Word = ({ word, translation, _id, initial }) => {
     .map(message => <p key={message.error}>{message.field}: {message.error}</p>) : '';
 
     const otherErrors = typeof editedWordErrors !== 'string' ? '' : editedWordErrors;
-    
+
     return (
         <>  
             { id === _id && editMode ?
@@ -211,8 +211,7 @@ const Word = ({ word, translation, _id, initial }) => {
 
             <Wrapper>
                 <div>
-                    <WordFromDb 
-                       
+                    <WordFromDb                
                         ref={insideWordClick} 
                         onClick={(event) => handleClickEvent(event, _id, word, translation)} 
                         width={testMode ? "800px" : ''} 
@@ -227,9 +226,9 @@ const Word = ({ word, translation, _id, initial }) => {
                                     &nbsp;-&nbsp;
                                     <InputTest 
                                         setTempTranslation={setTempTranslation} 
-                                        setEditModeInTestMode={setEditModeInTestMode}
                                         tempTranslation={tempTranslation} 
-                                        inititalValue={translation} 
+                                        inititalValue={translation}
+                                        setWordHasBeenEditedInTestMode={setWordHasBeenEditedInTestMode} 
                                     />
                                 </span>
                             </div>
