@@ -16,7 +16,7 @@ const Input = styled.div`
     }
 `
 
-const InputTest = ({ inititalValue, tempTranslation, setTempTranslation }) => {
+const InputTest = ({ inititalValue, tempTranslation, setTempTranslation, setEditModeInTestMode }) => {
 
     const {
 
@@ -58,7 +58,14 @@ const InputTest = ({ inititalValue, tempTranslation, setTempTranslation }) => {
     
     return (
             <Input>
-                <InputMask className="inputTest" mask={mask.join('')} formatChars={{'c': '[a-z\']'}} value={tempTranslation} onChange={inputHandler} autoFocus></InputMask>
+                <InputMask 
+                    className="inputTest" 
+                    mask={mask.join('')} 
+                    formatChars={{'c': '[a-z\']'}} 
+                    value={tempTranslation} 
+                    onChange={inputHandler} 
+                    autoFocus>
+                </InputMask>
             </Input>
         
     )

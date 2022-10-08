@@ -50,8 +50,6 @@ const Wrapper = styled.div`
 `
 const Word = ({ word, translation, _id, initial }) => {
     
-    //const hiddenValue = wordFromDb.replace(/[A-Za-z'\s]/gi,'*');
-    
     const {
 
         id,
@@ -106,9 +104,12 @@ const Word = ({ word, translation, _id, initial }) => {
     const insideWordClick = useRef(null);
     const refEditBttn = useRef(null);
 
-    if (tempTranslation === word && testMode) {
-        setTempTranslation(generateTranslationFromDb(initial.word));
-    } 
+    // to fix bug with firts render in test mode
+    if (testMode){
+        if (tempTranslation === word && testMode || tempTranslation !== translation) { //|| word !== initial.word && testMode) {
+            setTempTranslation(generateTranslationFromDb(initial.word));
+        } 
+    }    
 
     const wordHandler = event => {
         setEditedWord(event.target.value);
@@ -124,7 +125,7 @@ const Word = ({ word, translation, _id, initial }) => {
     }
 
     const handleClickEvent = (event, id, word, translation) => {
-        console.log('handle click event')
+      
         switch (event.detail) {
                 case 1: {
                     if (testMode && !oneClickFnCalled) {
@@ -134,7 +135,7 @@ const Word = ({ word, translation, _id, initial }) => {
                     }
 
                     break;
-                }
+                } 
 
                 case 2: {
                     if (editedWordErrors && !isEditBttnClicked) setEditedWordErrors('');
@@ -222,7 +223,12 @@ const Word = ({ word, translation, _id, initial }) => {
                                 {word} 
                                 <span className="translation" >
                                     &nbsp;-&nbsp;
-                                    <InputTest setTempTranslation={setTempTranslation} tempTranslation={tempTranslation} inititalValue={translation} />
+                                    <InputTest 
+                                        setTempTranslation={setTempTranslation} 
+                                        setEditModeInTestMode={setEditModeInTestMode}
+                                        tempTranslation={tempTranslation} 
+                                        inititalValue={translation} 
+                                    />
                                 </span>
                             </div>
 
