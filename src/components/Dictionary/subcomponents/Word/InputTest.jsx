@@ -13,10 +13,6 @@ const Input = styled.div`
         border: none;
         text-align: center;
         letter-spacing: 10px;
-
-        ::current {
-            color: red;
-          }
     }
 `
 
@@ -57,8 +53,7 @@ const InputTest = ({ inititalValue, tempTranslation, setTempTranslation, initial
         
         if(typedInput)
         setTempTranslation(typedInput);
-
-       
+      
         if(typedInput === initialTranslation){
             setTxtColor('green');
             setBorderColor('green');

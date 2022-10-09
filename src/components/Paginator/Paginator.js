@@ -17,8 +17,10 @@ const Paginator = ({ howMany, children}) => {
             allSlice.push(slice);
         }
         if (allSlice[i] !== undefined) allSlice[i].reverse();
-      
-        return allSlice[i];
+        
+        children = allSlice;
+
+        return children[i];
     }
 
     const clickedLinkFn = (e, page) => {

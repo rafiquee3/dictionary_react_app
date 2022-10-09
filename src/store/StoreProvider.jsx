@@ -14,6 +14,7 @@ const StoreProvider = ({children}) => {
     const [page, setPage] = useState(0);
     const [testMode, setTestMode] = useState(false);
     const [tempTranslationTestInput, setTempTranslationTestInput] = useState('');
+    const [storedItemsValues, setStoredItemsValues] = useState([]);
 
     return (
         <StoreContext.Provider value={
@@ -42,6 +43,8 @@ const StoreProvider = ({children}) => {
                 setTestMode,
                 tempTranslationTestInput, 
                 setTempTranslationTestInput,
+                storedItemsValues, 
+                setStoredItemsValues
             }
         }>
             {children}

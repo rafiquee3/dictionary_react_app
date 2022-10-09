@@ -1,8 +1,9 @@
 import React, { useContext } from "react";
 import { StoreContext } from "../../store/StoreProvider";
 import styled, { css } from 'styled-components';
+import Paginator from '../Paginator/Paginator'
+//import PaginatedItems from '../Paginator/Paginate';
 import Word from "./subcomponents/Word/Word";
-import Paginator from "../Paginator/Paginator";
 
 const WordWrapper = styled.div`
     display: flex;
@@ -20,20 +21,11 @@ const Dictionary = () => {
         </WordWrapper>)) 
     : 
         '';
-    
-    const listOfAllWordsTestMode = words !== null ? 
 
-    (words.map(word => 
-        <WordWrapper>
-            <Word key={word.word} {...word} initial={{...word}}></Word>
-        </WordWrapper>)) 
-    : 
-        '';
-    
     return (
         <>
             <Paginator howMany={5}>
-                { testMode ? listOfAllWordsTestMode : listOfAllWords }
+                { listOfAllWords }
             </Paginator>
         </>
     )

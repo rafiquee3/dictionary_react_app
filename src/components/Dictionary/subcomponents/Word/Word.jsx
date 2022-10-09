@@ -55,16 +55,20 @@ const Word = ({ word, translation, _id, initial }) => {
 
         id,
         setId,
-        editedWord,
+        
         editMode,
+        editedWord,
+        setEditedWord,
+        editedTranslation,
+        setEditedTranslation,
         setEditMode,
         testMode,
         setTestMode, 
-        setEditedWord,
+     
         page, 
         setPage,
-        editedTranslation,
-        setEditedTranslation,
+    
+    
         outsideEditBttnClick,
         setOutsideEditBttnClick,
         isEditBttnClicked, 
@@ -97,33 +101,31 @@ const Word = ({ word, translation, _id, initial }) => {
         translation = generateTranslationFromDb(initial.word);
     }
 
+    const [wordState, setWordState] = useState(word);
+    const [translationState, setTranslationState] = useState(translation);
     const [tempTranslation, setTempTranslation] = useState(translation);
     const [editModeInTestMode, setEditModeInTestMode] = useState(false);
     const [oneClickFnCalled, setOneClickFnCalled] = useState(false);
-    const [wordHasBeenEditedInTestMode, setWordHasBeenEditedInTestMode] = useState(false);
     const [borderColor, setBorderColor] = useState('');
 
     const wordFromDbRef = useRef(null);
     const insideWordClick = useRef(null);
     const refEditBttn = useRef(null);
-
-    // to fix bug with firts render in test mode
-    if (testMode && !editModeInTestMode){
-        if (tempTranslation === word || tempTranslation !== translation) { 
-            if(!wordHasBeenEditedInTestMode)
-            setTempTranslation(generateTranslationFromDb(initial.word));
-        } 
-    }     
+    const inputEditModeRef = useRef(null);
 
     const wordHandler = event => {
+        setWordState(event.target.value);
         setEditedWord(event.target.value);
     }
 
     const translationHandler = event => {
+        setTranslationState(event.target.value);
         setEditedTranslation(event.target.value);
     }
 
-    const setInitialValue = (word = word, translation = translation) => {
+    const setInitialValue = (word, translation) => {
+        setWordState(word);
+        setTranslationState(translation)
         setEditedWord(word);
         setEditedTranslation(translation);
     }
@@ -135,26 +137,24 @@ const Word = ({ word, translation, _id, initial }) => {
                     if (testMode && !oneClickFnCalled) {
                         setOneClickFnCalled(true);
                         setEditModeInTestMode(true);
-                        setWordHasBeenEditedInTestMode(true)
                         break;
                     }
                     break;
                 } 
 
                 case 2: {
-                    if (editedWordErrors && !isEditBttnClicked) setEditedWordErrors('');
+                    if (!inputEditModeRef.current) {
+                        if (editedWordErrors && !isEditBttnClicked) setEditedWordErrors('');
 
-                    if (!testMode) {
-                        setId(id);
-                        setEditMode(true);
-
-                        if(editedWord === '' && editedTranslation === '')
-                        setInitialValue(word, translation);
-
-                        setIsEditBttnClicked(true);
+                        if (!testMode) {
+                            setId(id);
+                            setEditMode(true);
+                            setInitialValue(word, translation); 
+                            setIsEditBttnClicked(true);
+                            break;
+                        }
                         break;
                     }
-                    break;
                 }     
           }
     }
@@ -167,7 +167,6 @@ const Word = ({ word, translation, _id, initial }) => {
             if (!testMode) {
                 if (wordFromDbRef.current && !wordFromDbRef.current.contains(event.target) && !refEditBttn.current.ref.contains(event.target)) {
                     setEditMode(false);
-                    setOutsideEditBttnClick(true);
                     refEditBttn.current.setIsEditBttnClicked();
                 }
             } else if (testMode && insideWordClick.current && !insideWordClick.current.contains(event.target)) {
@@ -177,9 +176,14 @@ const Word = ({ word, translation, _id, initial }) => {
         };
         document.addEventListener('click', handleClickOutside, true);
         return () => {
+            console.log('odmontowuje word')
             document.removeEventListener('click', handleClickOutside, true); 
         };
-    }, [tempTranslation]);
+    }, [testMode]);
+
+    useEffect(() => {
+        setTempTranslation(translation);
+    }, [testMode])
 
     const errorWord = typeof editedWordErrors !== 'string' ? editedWordErrors
     .filter(message => message.field === "word")
@@ -190,7 +194,7 @@ const Word = ({ word, translation, _id, initial }) => {
     .map(message => <p key={message.error}>{message.field}: {message.error}</p>) : '';
 
     const otherErrors = typeof editedWordErrors !== 'string' ? '' : editedWordErrors;
-
+    console.log('word rerender')
     return (
         <>  
             { id === _id && editMode ?
@@ -201,8 +205,8 @@ const Word = ({ word, translation, _id, initial }) => {
                         ref={wordFromDbRef}
                         onClick={(event) => handleClickEvent(event, _id, word, translation)} 
                     >      
-                        <Input value={editedWord} onChange={wordHandler}/>
-                        <Input value={editedTranslation} onChange={translationHandler} />
+                        <Input value={wordState} onChange={wordHandler} ref={inputEditModeRef}/>
+                        <Input value={translationState} onChange={translationHandler} />
                     </WordFromDb>
                     <Error><p>{errorWord}</p><p>{errorTranslation}</p><p>{otherErrors}</p></Error>
                 </div>   
@@ -254,9 +258,7 @@ const Word = ({ word, translation, _id, initial }) => {
 
             <Wrapper>
                 <div>
-                    <WordFromDb 
-                      
-                       
+                    <WordFromDb       
                         ref={insideWordClick} 
                         onClick={(event) => handleClickEvent(event, _id, word, translation)} 
                     >
