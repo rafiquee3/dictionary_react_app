@@ -70,15 +70,11 @@ const Word = ({ word, translation, _id, initial, display }) => {
         setPage,
     
     
-        outsideEditBttnClick,
-        setOutsideEditBttnClick,
         isEditBttnClicked, 
         setIsEditBttnClicked,
-        callback,
-        setCallback,
         editedWordErrors,
         setEditedWordErrors,
-        tempTranslationTestInput, 
+
 
     } = useContext(StoreContext);
 

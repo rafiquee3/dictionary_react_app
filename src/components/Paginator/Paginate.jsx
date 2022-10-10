@@ -1,4 +1,4 @@
-import React ,{ useContext, useState } from "react";
+import React ,{ useContext, useEffect } from "react";
 import { StoreContext } from "../../store/StoreProvider";
 import LinkPage from "./LinkPage";
 import styled, { css } from 'styled-components';
@@ -16,14 +16,15 @@ const Paginator = ({ howMany, words}) => {
     const numberOfPages = Math.ceil(wordsLength / howMany);
     const wordsArr = [...words];
     let linkElements = [...words];
-    
+    let prevPage = false;
+
     const range = (start, end) => {
         return Array(end - start + 1).fill().map((_, idx) => start + idx)
     }
 
     const showPage = (index) => {
         
-        if (linkElements.length === 0) return '';
+        if (linkElements.length === 0) return 'Add a new word';
 
         const allSlice = [];
         linkElements = linkElements.map((link, i) => link = Object.assign(link, {i}));
@@ -33,7 +34,10 @@ const Paginator = ({ howMany, words}) => {
             allSlice.push(slice);
         }
         
-        if (allSlice[index] === undefined) return setPage(page - 1);
+        if (allSlice[index] === undefined) {
+            prevPage = true;
+            return null;
+        }
 
         const leftScope = allSlice[index][0].i;
         const rightScope = allSlice[index][allSlice[index].length - 1].i;
@@ -42,12 +46,12 @@ const Paginator = ({ howMany, words}) => {
         const result = wordsArr.map((word) => {
             if(scopeArr.find(element => element === word.i) !== undefined) {
                 return (
-                    <WordWrapper>
+                    <WordWrapper key={word.word}>
                         <Word key={word.word} {...word} initial={{...word}} display={'flex'}></Word>
                     </WordWrapper> )
             } else {
                 return (
-                    <WordWrapper>
+                    <WordWrapper key={word.word}>
                         <Word key={word.word} {...word} initial={{...word}} display={'none'}></Word>
                     </WordWrapper> )
             }
@@ -60,10 +64,17 @@ const Paginator = ({ howMany, words}) => {
 
         setPage(page);
     }
+
+    useEffect(() => {
+        if (prevPage) {
+            setPage(page - 1);
+            prevPage = false;
+        }
+        
+    }, [numberOfPages])
     
     return (
-        <>
-            
+        <>  
             {showPage(page)}
             <LinkPage clickedLinkFn={clickedLinkFn} numberOfPages={numberOfPages} />
         </>
