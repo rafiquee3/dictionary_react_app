@@ -1,7 +1,7 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { StoreContext } from "../../store/StoreProvider";
 import styled, { css } from 'styled-components';
-import Paginator from '../Paginator/Paginator'
+import Paginator from '../Paginator/Paginate'
 //import PaginatedItems from '../Paginator/Paginate';
 import Word from "./subcomponents/Word/Word";
 
@@ -12,21 +12,10 @@ const WordWrapper = styled.div`
 
 const Dictionary = () => {
     const {user, setUser, words, setWords, editedWord, editedTranslation, testMode, setTestMode} = useContext(StoreContext);
-    
-    const listOfAllWords = words !== null ? 
-
-    (words.map(word => 
-        <WordWrapper>
-            <Word key={word.word} {...word} initial={{...word}}></Word>
-        </WordWrapper>)) 
-    : 
-        '';
 
     return (
         <>
-            <Paginator howMany={5}>
-                { listOfAllWords }
-            </Paginator>
+            <Paginator howMany={4} words={words}/>
         </>
     )
 }

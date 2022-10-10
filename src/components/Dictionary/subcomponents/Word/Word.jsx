@@ -7,6 +7,7 @@ import { StoreContext } from "../../../../store/StoreProvider";
 const WordFromDb = styled.div`
     display: flex;
     display-direction: rows;
+   
     align-items: center;
     justify-content: center;
     width: ${props => props.width || '600px'};
@@ -45,11 +46,11 @@ const Error = styled.div`
     color: #320306;
 `
 const Wrapper = styled.div`
-    display: flex;
+    display: ${props => props.display};
     align-items: center;
     
 `
-const Word = ({ word, translation, _id, initial }) => {
+const Word = ({ word, translation, _id, initial, display }) => {
     
     const {
 
@@ -183,6 +184,7 @@ const Word = ({ word, translation, _id, initial }) => {
 
     useEffect(() => {
         setTempTranslation(translation);
+        setBorderColor('#7E5675');
     }, [testMode])
 
     const errorWord = typeof editedWordErrors !== 'string' ? editedWordErrors
@@ -199,7 +201,7 @@ const Word = ({ word, translation, _id, initial }) => {
         <>  
             { id === _id && editMode ?
            
-            <Wrapper>
+            <Wrapper display={display}>
                 <div>    
                     <WordFromDb 
                         ref={wordFromDbRef}
@@ -215,7 +217,7 @@ const Word = ({ word, translation, _id, initial }) => {
                 
             : testMode ?
 
-            <Wrapper>
+            <Wrapper display={display}>
                 <div>
                     <WordFromDb                
                         ref={insideWordClick} 
@@ -256,7 +258,7 @@ const Word = ({ word, translation, _id, initial }) => {
 
             :
 
-            <Wrapper>
+            <Wrapper display={display}>
                 <div>
                     <WordFromDb       
                         ref={insideWordClick} 
