@@ -11,9 +11,9 @@ const Button = styled.button`
     color: white;
     font-size: 25px;
 `
-const WordFunctions = ({ _id, word, translation }, ref) => {
+const WordFunctions = ({ _id, word, translation, initialValue }, ref) => {
 const editBttnRef = useRef();
-
+console.log(initialValue)
 const {
 
         user,
@@ -72,7 +72,7 @@ const {
         const collectionName = user;
 
         const {data, status} = await request.put(
-            `/words/${collectionName}/${id}/${editedWord}/${editedTranslation}`, {}
+            `/words/${collectionName}/${id}/${word}/${translation}`, {}
         );
         if(status === 200) {
             getNewListOfWords(collectionName);
@@ -80,7 +80,7 @@ const {
             changeInputValue('', '');
         }
         if(data.message) {
-            changeInputValue(editedWord, editedTranslation);
+            changeInputValue(word, translation);
             setEditMode(true);
             setEditedWordErrors(data.message);
             setIsEditBttnClicked(true);
@@ -117,7 +117,7 @@ const {
     return (
         <>
             <Button onClick={() => deleteWord(user, _id)}>Delete</Button>
-            <Button ref={editBttnRef} onClick={() => editWord(_id, word, translation)}>{showBttnLabel}</Button>
+            <Button ref={editBttnRef} onClick={() => editWord(_id, initialValue.word, initialValue.translation)}>{showBttnLabel}</Button>
         </>
     )
 }

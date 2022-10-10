@@ -112,19 +112,19 @@ const Word = ({ word, translation, _id, initial, display }) => {
 
     const wordHandler = event => {
         setWordState(event.target.value);
-        setEditedWord(event.target.value);
+        //setEditedWord(event.target.value);
     }
 
     const translationHandler = event => {
         setTranslationState(event.target.value);
-        setEditedTranslation(event.target.value);
+        //setEditedTranslation(event.target.value);
     }
 
     const setInitialValue = (word, translation) => {
         setWordState(word);
         setTranslationState(translation)
-        setEditedWord(word);
-        setEditedTranslation(translation);
+        //setEditedWord(word);
+        //setEditedTranslation(translation);
     }
 
     const handleClickEvent = (event, id, word, translation) => {
@@ -208,7 +208,7 @@ const Word = ({ word, translation, _id, initial, display }) => {
                     </WordFromDb>
                     <Error><p>{errorWord}</p><p>{errorTranslation}</p><p>{otherErrors}</p></Error>
                 </div>   
-                { testMode ? '' : <WordFunctions word={word} translation={translation} _id={_id} ref={refEditBttn}/>} 
+                <WordFunctions word={wordState} translation={translationState} initialValue={word, translation} _id={_id} ref={refEditBttn}/> 
             </Wrapper>
                 
             : testMode ?
@@ -267,7 +267,7 @@ const Word = ({ word, translation, _id, initial, display }) => {
 
                     </WordFromDb> 
                 </div>
-                <WordFunctions word={word} translation={translation} _id={_id} ref={refEditBttn}/> 
+                <WordFunctions word={word} translation={translation} initialValue={word, translation} _id={_id} ref={refEditBttn}/> 
             </Wrapper>
 
             }
@@ -275,4 +275,4 @@ const Word = ({ word, translation, _id, initial, display }) => {
     )
 }
 
-export default Word;
+export default React.memo(Word);
