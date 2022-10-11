@@ -3,18 +3,15 @@ export const StoreContext = createContext(null);
 
 const StoreProvider = ({children}) => {
     const [words, setWords] = useState([]);
-    const [user, setUser] = useState(null); //niezalogowany
+    const [user, setUser] = useState(null);
     const [editMode, setEditMode] = useState(false);
     const [id, setId] = useState('');
-    const [editedWord, setEditedWord] = useState('');
-    const [editedTranslation, setEditedTranslation] = useState('');
     const [editedWordErrors, setEditedWordErrors] = useState('');
-    const [outsideEditBttnClick, setOutsideEditBttnClick] = useState(false);
     const [isEditBttnClicked, setIsEditBttnClicked] = useState(false);
     const [page, setPage] = useState(0);
     const [testMode, setTestMode] = useState(false);
-    const [tempTranslationTestInput, setTempTranslationTestInput] = useState('');
-    const [storedItemsValues, setStoredItemsValues] = useState([]);
+    const [searchValue, setSearchValue] = useState('');
+    const [searchMode, setSearchMode] = useState(false);
 
     return (
         <StoreContext.Provider value={
@@ -27,24 +24,18 @@ const StoreProvider = ({children}) => {
                 setEditMode,
                 id, 
                 setId,
-                editedWord,
-                setEditedWord,
-                editedTranslation, 
-                setEditedTranslation,
                 editedWordErrors, 
                 setEditedWordErrors,
-                outsideEditBttnClick, 
-                setOutsideEditBttnClick,
                 isEditBttnClicked, 
                 setIsEditBttnClicked,
                 page, 
                 setPage,
                 testMode, 
                 setTestMode,
-                tempTranslationTestInput, 
-                setTempTranslationTestInput,
-                storedItemsValues, 
-                setStoredItemsValues
+                searchValue, 
+                setSearchValue,
+                searchMode, 
+                setSearchMode,
             }
         }>
             {children}

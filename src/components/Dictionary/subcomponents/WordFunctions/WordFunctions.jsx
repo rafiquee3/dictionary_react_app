@@ -11,23 +11,17 @@ const Button = styled.button`
     color: white;
     font-size: 25px;
 `
-const WordFunctions = ({ _id, word, translation, initialValue }, ref) => {
+const WordFunctions = ({ _id, word, translation, initialValue, setInitialValue }, ref) => {
 const editBttnRef = useRef();
-console.log(initialValue)
+
 const {
 
         user,
         setWords,
         editMode,
         setEditMode,
-        editedWord,
-        setEditedWord,
-        editedTranslation,
-        setEditedTranslation,
         id,
         setId,
-        outsideEditBttnClick,
-        setOutsideEditBttnClick,
         editedWordErrors,
         setEditedWordErrors,
         isEditBttnClicked, 
@@ -47,11 +41,6 @@ const {
             setEditedWordErrors(data.message);
         }
     }
-
-    const changeInputValue = (word, translation) => {
-        setEditedWord(word);
-        setEditedTranslation(translation);
-}
 
     const deleteWord = async (user, id) => {
         const collectionName = user;
@@ -77,21 +66,16 @@ const {
         if(status === 200) {
             getNewListOfWords(collectionName);
             setEditMode(false);
-            changeInputValue('', '');
         }
         if(data.message) {
-            changeInputValue(word, translation);
             setEditMode(true);
             setEditedWordErrors(data.message);
             setIsEditBttnClicked(true);
         }
     }
 
-    const editWord = async (_id, word, translation) => {
+    const editWord = (_id, word, translation) => {
   
-        if (outsideEditBttnClick) {
-            setOutsideEditBttnClick(false);
-        }
         setId(_id);
         setEditMode(true);
 
@@ -102,7 +86,7 @@ const {
             return saveInToDb(_id);
         }
         
-        changeInputValue(word, translation);
+        setInitialValue(initialValue.word, initialValue.translation);
         setIsEditBttnClicked(true);
     }
 

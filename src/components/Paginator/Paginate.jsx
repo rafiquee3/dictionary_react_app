@@ -10,13 +10,20 @@ const WordWrapper = styled.div`
 `
 
 const Paginator = ({ howMany, words}) => {
-    const {page, setPage} = useContext(StoreContext);
+    const {
+        page, 
+        setPage, 
+        searchValue, 
+        setSearchValue,
+        searchMode, 
+        setSearchMode,} = useContext(StoreContext);
 
     const wordsLength = words.length;
     const numberOfPages = Math.ceil(wordsLength / howMany);
     const wordsArr = [...words];
-    let linkElements = [...words];
+    let wordElements = [...words];
     let prevPage = false;
+    let searchPage = false;
 
     const range = (start, end) => {
         return Array(end - start + 1).fill().map((_, idx) => start + idx)
@@ -24,19 +31,37 @@ const Paginator = ({ howMany, words}) => {
 
     const showPage = (index) => {
         
-        if (linkElements.length === 0) return 'Add a new word';
+        if (wordElements.length === 0) return 'Add a new word';
 
         const allSlice = [];
-        linkElements = linkElements.map((link, i) => link = Object.assign(link, {i}));
+        wordElements = wordElements.map((link, i) => link = Object.assign(link, {i}));
+        const copyOfWordElements = [...wordElements];
 
         for (let i = 0; i < numberOfPages; i++) {
-            const slice = linkElements.splice(-howMany);
+            const slice = wordElements.splice(-howMany);
             allSlice.push(slice);
         }
         
         if (allSlice[index] === undefined) {
             prevPage = true;
             return null;
+        }
+       
+        // search item
+        if(searchMode) {
+
+            let findObj = copyOfWordElements.find(element => element.word === searchValue);
+            if(findObj) {
+                allSlice.forEach((element, i, arr) => {
+                    if(element.find(element => element.i === findObj.i)) {
+                        index = i;
+                        searchPage = index;
+                    }
+                })
+
+            } else {
+                console.log('nie znalazlem')
+            }
         }
 
         const leftScope = allSlice[index][0].i;
@@ -72,6 +97,14 @@ const Paginator = ({ howMany, words}) => {
         }
         
     }, [numberOfPages])
+    
+    useEffect(() => {
+        if (searchPage) {
+            setPage(searchPage);
+            searchPage = false;
+        }
+        
+    }, [searchMode])
     
     return (
         <>  

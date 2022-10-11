@@ -47,18 +47,17 @@ const AddWordForm = () => {
     const wordHandler = event => {
         setWord(event.target.value);
     }
-    const toggleLogout = event => {
-        setUser(null);
-        setWords(null);
-    }
+  
     const translationHandler = event => {
         setTranslation(event.target.value);
     }
+
     const clearInputField = () => {
         setWord('');
         setTranslation('');
         setValidateMessage('');
     }
+
     const openOrClosedModal = () => {
         clearInputField();
         toggleWordForm();
@@ -112,10 +111,10 @@ const AddWordForm = () => {
         };
       }, [ toggleWordForm ]);
 
-    const handleKeypress = e => {
+    const handleKeypress = event => {
     
-      if (e.code === 'Enter') {
-        toggleSubmit(e);
+      if (event.code === 'Enter') {
+        toggleSubmit(event);
       }
     };
 
@@ -131,10 +130,10 @@ const AddWordForm = () => {
 
     return (
         <>
-        <Button onClick={openOrClosedModal} bgcolor="#9583DB">New word</Button>
+        <Button onClick={() => openOrClosedModal()} bgcolor="#9583DB">New word</Button>
         <Modal  isShowing={iswordFormShowed}>
             <Form ref={modalRef} onSubmit={toggleSubmit} method="post" onKeyPress={e => handleKeypress(e)}>       
-                <CloseButton onClick={openOrClosedModal}>X</CloseButton>
+                <CloseButton onClick={() => openOrClosedModal()}>X</CloseButton>
                 
                 <Input type="text" placeholder="word" value={word} onChange={wordHandler}/>
                 {errorWord}

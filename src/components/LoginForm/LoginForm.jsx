@@ -117,16 +117,16 @@ const LoginForm = () => {
       }
     };
     const setButtonLabel = Boolean(user) ? 
-    (<Button onClick={toggleLogout} bgcolor="#9583DB">Wyloguj</Button>) 
+    (<Button onClick={() => toggleLogout()} bgcolor="#9583DB">Wyloguj</Button>) 
     : 
-    (<Button onClick={openOrClosedModal} bgcolor="#9583DB">Zaloguj sie</Button>);
+    (<Button onClick={() => openOrClosedModal()} bgcolor="#9583DB">Zaloguj sie</Button>);
 
     return (
         <>
         {setButtonLabel}
         <Modal  isShowing={isLoginFormShowed}>
             <Form ref={modalRef} onSubmit={toggleSubmit} method="post" onKeyPress={e => handleKeypress(e)}>       
-                <CloseButton onClick={openOrClosedModal}>X</CloseButton>
+                <CloseButton onClick={() => openOrClosedModal()}>X</CloseButton>
                 {validateMessage}
                 
                 <Input type="text" placeholder="Username" value={login} onChange={loginHandler}/>

@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, forwardRef, useState } from "react";
 import styled, { css } from 'styled-components';
 import InputMask from 'react-input-mask';
-import { StoreContext } from "../../../../store/StoreProvider";
 
 const Input = styled.div`
     display: inline-block;
@@ -18,34 +17,6 @@ const Input = styled.div`
 
 const InputTest = ({ inititalValue, tempTranslation, setTempTranslation, initialTranslation, setBorderColor }) => {
     const [txtColor, setTxtColor] = useState('black');
-    const {
-
-            user,
-            setUser,
-            words,
-            setWords,
-            id,
-            setId,
-            editedWord,
-            editMode,
-            setEditMode,
-            testMode,
-            setTestMode, 
-            setEditedWord,
-            editedTranslation,
-            setEditedTranslation,
-            outsideEditBttnClick,
-            setOutsideEditBttnClick,
-            isEditBttnClicked, 
-            setIsEditBttnClicked,
-            callback,
-            setCallback,
-            editedWordErrors,
-            setEditedWordErrors,
-            tempTranslationTestInput, 
-            setTempTranslationTestInput,
-
-    } = useContext(StoreContext);
     
     const inputHandler = (event) => {
 
@@ -53,7 +24,12 @@ const InputTest = ({ inititalValue, tempTranslation, setTempTranslation, initial
         
         if(typedInput)
         setTempTranslation(typedInput);
-      
+        
+        if(typedInput.split('').find(element => element === '_') === undefined && typedInput !== initialTranslation && typedInput.length) {
+            setBorderColor('#B65656');
+            return;
+        }
+
         if(typedInput === initialTranslation){
             setTxtColor('green');
             setBorderColor('green');
@@ -61,7 +37,6 @@ const InputTest = ({ inititalValue, tempTranslation, setTempTranslation, initial
             setTxtColor('black');
             setBorderColor('#7E5675');
         }
-
     }
 
     const mask = [];
@@ -81,4 +56,4 @@ const InputTest = ({ inititalValue, tempTranslation, setTempTranslation, initial
         
     )
 }
-export default React.memo(InputTest);
+export default InputTest;
