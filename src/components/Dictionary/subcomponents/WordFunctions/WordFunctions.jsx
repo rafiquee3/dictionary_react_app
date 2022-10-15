@@ -11,11 +11,10 @@ const Button = styled.button`
     color: white;
     font-size: 25px;
 `
-const WordFunctions = ({ _id, word, translation, initialValue, setInitialValue }, ref) => {
+const WordFunctions = ({ _id, word, translation, initialValue, setInitialValue, setOutSideClickListener }, ref) => {
 const editBttnRef = useRef();
 
 const {
-
         user,
         setWords,
         editMode,
@@ -25,7 +24,7 @@ const {
         editedWordErrors,
         setEditedWordErrors,
         isEditBttnClicked, 
-        setIsEditBttnClicked
+        setIsEditBttnClicked,
 
     } = useContext(StoreContext);
 
@@ -74,7 +73,7 @@ const {
         }
     }
 
-    const editWord = (_id, word, translation) => {
+    const editWord = (event, _id) => {
   
         setId(_id);
         setEditMode(true);
@@ -85,23 +84,22 @@ const {
             setIsEditBttnClicked(false);
             return saveInToDb(_id);
         }
-        
+
+        setOutSideClickListener(true);
+
         setInitialValue(initialValue.word, initialValue.translation);
         setIsEditBttnClicked(true);
     }
 
     useImperativeHandle(ref, () => ({
         ref: editBttnRef.current,
-        setIsEditBttnClicked: () => {
-            setIsEditBttnClicked(false);
-        }
     }));
 
     const showBttnLabel = _id === id && editMode ? 'Save' : 'Edit';
     return (
         <>
             <Button onClick={() => deleteWord(user, _id)}>Delete</Button>
-            <Button ref={editBttnRef} onClick={() => editWord(_id, initialValue.word, initialValue.translation)}>{showBttnLabel}</Button>
+            <Button ref={editBttnRef} onClick={(event) => editWord(event, _id)}>{showBttnLabel}</Button>
         </>
     )
 }

@@ -45,7 +45,10 @@ const SearchForm = () => {
         searchValue, 
         setSearchValue,
         searchMode, 
-        setSearchMode,} = useContext(StoreContext);
+        setSearchMode,
+        editedWordErrors, 
+        setEditedWordErrors,
+        words } = useContext(StoreContext);
 
     const searchHandler = event => {
         setSearch(event.target.value);
@@ -53,17 +56,31 @@ const SearchForm = () => {
 
     const clearInputField = () => {
         setSearch('');
-        setValidateMessage('');
+        setEditedWordErrors('');
     }
+
     const openOrClosedModal = () => {
         clearInputField();
         toggleSearchForm();
     }
 
+    const searchWordInDb = (word) => {
+        return words.find(element => element.word === word)
+    }
+
     const toggleSubmit = (event) => {
         event.preventDefault();
-        setSearchValue(search);
+
+        const searchResult = searchWordInDb(search)
+        setSearchValue(searchResult);
         setSearchMode(true);
+       
+        if (searchResult !== undefined) {
+            openOrClosedModal();
+            setValidateMessage('');
+        } else if (searchResult === undefined) {
+            setValidateMessage('this word is not in the dictionary');
+        }
     }
 
     const handleCloseBttn = () => {

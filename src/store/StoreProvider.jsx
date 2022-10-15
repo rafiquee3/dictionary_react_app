@@ -12,7 +12,7 @@ const StoreProvider = ({children}) => {
     const [testMode, setTestMode] = useState(false);
     const [searchValue, setSearchValue] = useState('');
     const [searchMode, setSearchMode] = useState(false);
-
+    const [wordComponentIsMounted, setWordComponentIsMounted] = useState(false);
     return (
         <StoreContext.Provider value={
             {
@@ -28,6 +28,8 @@ const StoreProvider = ({children}) => {
                 setEditedWordErrors,
                 isEditBttnClicked, 
                 setIsEditBttnClicked,
+                wordComponentIsMounted,
+                setWordComponentIsMounted,
                 page, 
                 setPage,
                 testMode, 

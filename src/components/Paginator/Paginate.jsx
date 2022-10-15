@@ -16,14 +16,18 @@ const Paginator = ({ howMany, words}) => {
         searchValue, 
         setSearchValue,
         searchMode, 
-        setSearchMode,} = useContext(StoreContext);
+        setSearchMode,
+        editedWordErrors, 
+        setEditedWordErrors,} = useContext(StoreContext);
 
     const wordsLength = words.length;
     const numberOfPages = Math.ceil(wordsLength / howMany);
     const wordsArr = [...words];
+
     let wordElements = [...words];
     let prevPage = false;
     let searchPage = false;
+    let searchNotFound = false;
 
     const range = (start, end) => {
         return Array(end - start + 1).fill().map((_, idx) => start + idx)
@@ -47,20 +51,18 @@ const Paginator = ({ howMany, words}) => {
             return null;
         }
        
-        // search item
         if(searchMode) {
-
-            let findObj = copyOfWordElements.find(element => element.word === searchValue);
-            if(findObj) {
-                allSlice.forEach((element, i, arr) => {
-                    if(element.find(element => element.i === findObj.i)) {
+            console.log('SEARCH MODE')
+            // searchValue.i is a global variable with the index of the searched object
+            if(searchValue !== undefined) {
+                allSlice.forEach((element, i) => {
+                    if(element.find(element => element.i === searchValue.i)) {
                         index = i;
                         searchPage = index;
                     }
                 })
-
             } else {
-                console.log('nie znalazlem')
+                searchNotFound = true;
             }
         }
 
@@ -70,11 +72,14 @@ const Paginator = ({ howMany, words}) => {
 
         const result = wordsArr.map((word) => {
             if(scopeArr.find(element => element === word.i) !== undefined) {
+
                 return (
                     <WordWrapper key={word.word}>
                         <Word key={word.word} {...word} initial={{...word}} display={'flex'}></Word>
                     </WordWrapper> )
+
             } else {
+
                 return (
                     <WordWrapper key={word.word}>
                         <Word key={word.word} {...word} initial={{...word}} display={'none'}></Word>
@@ -84,13 +89,15 @@ const Paginator = ({ howMany, words}) => {
         return result.reverse();
     }
 
-    const clickedLinkFn = (e, page) => {
+    const clickedLinkFn = (page) => {
         if( page < 1) page = 0;
-
+        if (page > numberOfPages - 1) page -= 1;
+    
         setPage(page);
     }
 
     useEffect(() => {
+        console.log('UseEffect 1 pagi')
         if (prevPage) {
             setPage(page - 1);
             prevPage = false;
@@ -99,13 +106,19 @@ const Paginator = ({ howMany, words}) => {
     }, [numberOfPages])
     
     useEffect(() => {
-        if (searchPage) {
+        console.log('UseEffect 2 pagi')
+        if (searchPage !== false) {
+            console.log('UseEffect 2 pagi w if searchPage')
             setPage(searchPage);
             searchPage = false;
+            setSearchMode(false);
         }
-        
+        if (searchNotFound) {
+            setSearchMode(false);
+            
+        }
     }, [searchMode])
-    
+    console.log('reneruje paginate')
     return (
         <>  
             {showPage(page)}

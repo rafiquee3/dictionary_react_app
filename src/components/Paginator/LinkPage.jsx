@@ -42,14 +42,14 @@ const LinkPage = ({ clickedLinkFn, numberOfPages }) => {
 
         reactElements
         .push(React.createElement('li', { 
-            onClick: (event) => clickedLinkFn(event, page - 1), 
+            onClick: () => clickedLinkFn(page - 1), 
             className: `li ${ page === 0 ? 'nextPrevBttnDesactive' : ''}`, 
             key: `keyPrev`}, `<`))
 
         for (let i = 0; i < numberOfPages; i++) {
             reactElements
             .push(React.createElement('li', { 
-                onClick: (event) => clickedLinkFn(event, i), 
+                onClick: () => clickedLinkFn(i), 
                 className: `li ${i === page ? 'active' : 'desactive'}`, 
                 key: `key${i}`}, `${i + 1}`))
         }
@@ -58,7 +58,7 @@ const LinkPage = ({ clickedLinkFn, numberOfPages }) => {
 
         reactElements
         .push(React.createElement('li', { 
-            onClick: (event) => clickedLinkFn(event, page + 1), 
+            onClick: () => clickedLinkFn(page + 1), 
             className: `li ${ page === length ? 'nextPrevBttnDesactive' : ''}`, 
             key: `keyNext` }, `>`))
 

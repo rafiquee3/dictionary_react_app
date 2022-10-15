@@ -1,8 +1,15 @@
-import React, { useContext, useEffect, useState, useRef } from "react";
+import React, { useContext, useCallback, useEffect, useState, useRef } from "react";
 import styled, { css } from 'styled-components';
 import WordFunctions from "../WordFunctions/WordFunctions";
 import InputTest from "./InputTest";
 import { StoreContext } from "../../../../store/StoreProvider";
+import OutSideClickHandler from "./OutSideClickHandler";
+
+// hard to learn mode
+// change side in test mode
+// indicator advise in test mode
+// word detail mode with addnotation feature
+// loading page progress bar css
 
 const WordFromDb = styled.div`
     display: flex;
@@ -50,27 +57,22 @@ const Wrapper = styled.div`
     align-items: center;
     
 `
-const Word = ({ word, translation, _id, initial, display }) => {
+const Word = ({ _id, display, initial, translation, word }) => {
     
     const {
 
         id,
         setId,
-        
         editMode,
-
         setEditMode,
         testMode,
         setTestMode, 
-     
-        
-    
-    
+        searchValue, 
+        setSearchValue,
         isEditBttnClicked, 
         setIsEditBttnClicked,
         editedWordErrors,
         setEditedWordErrors,
-
 
     } = useContext(StoreContext);
 
@@ -92,6 +94,8 @@ const Word = ({ word, translation, _id, initial, display }) => {
     if (testMode) {
         word = initial.translation;
         translation = generateTranslationFromDb(initial.word);
+
+        // if (reverseTestMode)
     }
 
     const [wordState, setWordState] = useState(word);
@@ -99,12 +103,16 @@ const Word = ({ word, translation, _id, initial, display }) => {
     const [tempTranslation, setTempTranslation] = useState(translation);
     const [editModeInTestMode, setEditModeInTestMode] = useState(false);
     const [oneClickFnCalled, setOneClickFnCalled] = useState(false);
+    const [outSideClickListener, setOutSideClickListener] = useState(false);
     const [borderColor, setBorderColor] = useState('');
 
     const wordFromDbRef = useRef(null);
-    const insideWordClick = useRef(null);
-    const refEditBttn = useRef(null);
+    const insideWordClickRef = useRef(null);
+    const editBttnRef = useRef(null);
     const inputEditModeRef = useRef(null);
+
+    const DEFAULT_WORD_COLOR = "#7E5675";
+    const FOUND_WORD_COLOR = 'blue';
 
     const wordHandler = event => {
         setWordState(event.target.value);
@@ -120,60 +128,55 @@ const Word = ({ word, translation, _id, initial, display }) => {
     }
 
     const handleClickEvent = (event, id, word, translation) => {
-       
+        
         switch (event.detail) {
+                // Test mode
                 case 1: {
                     if (testMode && !oneClickFnCalled) {
+                        setOutSideClickListener(true)
                         setOneClickFnCalled(true);
                         setEditModeInTestMode(true);
                         break;
                     }
+
                     break;
                 } 
-
+                // Edit mode
                 case 2: {
                     if (!inputEditModeRef.current) {
                         if (editedWordErrors && !isEditBttnClicked) setEditedWordErrors('');
 
                         if (!testMode) {
+                            setOutSideClickListener(true)
                             setId(id);
                             setEditMode(true);
                             setInitialValue(word, translation); 
                             setIsEditBttnClicked(true);
                             break;
                         }
+
                         break;
                     }
                 }     
           }
     }
     
-    // click outside edit button 
-    useEffect(() => {
-        
-        const handleClickOutside = (event) => {
-          
-            if (!testMode) {
-                if (wordFromDbRef.current && !wordFromDbRef.current.contains(event.target) && !refEditBttn.current.ref.contains(event.target)) {
-                    setEditMode(false);
-                    refEditBttn.current.setIsEditBttnClicked();
-                }
-            } else if (testMode && insideWordClick.current && !insideWordClick.current.contains(event.target)) {
-                setEditModeInTestMode(false);
-                setOneClickFnCalled(false);
-            }
-        };
-        document.addEventListener('click', handleClickOutside, true);
-        return () => {
-            console.log('odmontowuje word')
-            document.removeEventListener('click', handleClickOutside, true); 
-        };
-    }, [testMode]);
-
     useEffect(() => {
         setTempTranslation(translation);
-        setBorderColor('#7E5675');
+        setBorderColor(DEFAULT_WORD_COLOR);
+        
     }, [testMode])
+
+    useEffect(() => {
+        console.log('useEffect word')
+        if(searchValue !== undefined) {
+            if(searchValue.word === word) {
+                setBorderColor(FOUND_WORD_COLOR);
+            }else if(searchValue.word !== word){
+                setBorderColor(DEFAULT_WORD_COLOR); // default color        
+            }
+        }
+    }, [searchValue])
 
     const errorWord = typeof editedWordErrors !== 'string' ? editedWordErrors
     .filter(message => message.field === "word")
@@ -195,7 +198,7 @@ const Word = ({ word, translation, _id, initial, display }) => {
                         ref={wordFromDbRef}
                         onClick={(event) => handleClickEvent(event, _id, word, translation)} 
                     >      
-                        <Input value={wordState} onChange={wordHandler} ref={inputEditModeRef}/>
+                        <Input value={wordState} onChange={wordHandler} ref={inputEditModeRef} />
                         <Input value={translationState} onChange={translationHandler} />
                     </WordFromDb>
                     <Error>{errorWord}{errorTranslation}{otherErrors}</Error>
@@ -205,8 +208,9 @@ const Word = ({ word, translation, _id, initial, display }) => {
                     translation={translationState} 
                     initialValue={{word, translation}} 
                     setInitialValue={setInitialValue} 
+                    setOutSideClickListener={setOutSideClickListener}
                     _id={_id} 
-                    ref={refEditBttn}
+                    ref={editBttnRef}
                 /> 
             </Wrapper>
                 
@@ -215,7 +219,7 @@ const Word = ({ word, translation, _id, initial, display }) => {
             <Wrapper display={display}>
                 <div>
                     <WordFromDb                
-                        ref={insideWordClick} 
+                        ref={insideWordClickRef} 
                         onClick={(event) => handleClickEvent(event, _id, word, translation)} 
                         width={testMode ? "800px" : ''} 
                         spacing={testMode ? '10px' : ''}
@@ -256,8 +260,9 @@ const Word = ({ word, translation, _id, initial, display }) => {
             <Wrapper display={display}>
                 <div>
                     <WordFromDb       
-                        ref={insideWordClick} 
+                        ref={insideWordClickRef} 
                         onClick={(event) => handleClickEvent(event, _id, word, translation)} 
+                        borderColor={borderColor}
                     >
                             {word} 
                             <span className="translation" >
@@ -270,10 +275,24 @@ const Word = ({ word, translation, _id, initial, display }) => {
                     translation={translation} 
                     initialValue={{word, translation}} 
                     setInitialValue={setInitialValue} 
+                    setOutSideClickListener={setOutSideClickListener}
                     _id={_id} 
-                    ref={refEditBttn}
+                    ref={editBttnRef}
                 /> 
             </Wrapper>
+            }
+            { outSideClickListener && 
+            <OutSideClickHandler 
+                wordFromDbRef={wordFromDbRef} 
+                editBttnRef={editBttnRef} 
+                insideWordClickRef={insideWordClickRef}
+                borderColor={borderColor}
+                colorPalette={DEFAULT_WORD_COLOR, FOUND_WORD_COLOR}
+                setBorderColor={setBorderColor}
+                setEditModeInTestMode={setEditModeInTestMode}
+                setOneClickFnCalled={setOneClickFnCalled}
+                setOutSideClickListener={setOutSideClickListener}
+            /> 
             }
         </>
     )
