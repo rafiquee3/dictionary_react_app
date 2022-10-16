@@ -63,8 +63,7 @@ const Word = ({ _id, display, initial, translation, word }) => {
 
         id,
         setId,
-        editMode,
-        setEditMode,
+        searchMode,
         testMode,
         setTestMode, 
         searchValue, 
@@ -101,6 +100,7 @@ const Word = ({ _id, display, initial, translation, word }) => {
     const [wordState, setWordState] = useState(word);
     const [translationState, setTranslationState] = useState(translation);
     const [tempTranslation, setTempTranslation] = useState(translation);
+    const [editMode, setEditMode] = useState(false);
     const [editModeInTestMode, setEditModeInTestMode] = useState(false);
     const [oneClickFnCalled, setOneClickFnCalled] = useState(false);
     const [outSideClickListener, setOutSideClickListener] = useState(false);
@@ -172,11 +172,13 @@ const Word = ({ _id, display, initial, translation, word }) => {
         if(searchValue !== undefined) {
             if(searchValue.word === word) {
                 setBorderColor(FOUND_WORD_COLOR);
-            }else if(searchValue.word !== word){
-                setBorderColor(DEFAULT_WORD_COLOR); // default color        
+                setOutSideClickListener(true);                
+
+            }else if( searchValue.word !== word) {
+                setBorderColor(DEFAULT_WORD_COLOR); 
             }
         }
-    }, [searchValue])
+    }, [searchMode])
 
     const errorWord = typeof editedWordErrors !== 'string' ? editedWordErrors
     .filter(message => message.field === "word")
@@ -196,7 +198,8 @@ const Word = ({ _id, display, initial, translation, word }) => {
                 <div>    
                     <WordFromDb 
                         ref={wordFromDbRef}
-                        onClick={(event) => handleClickEvent(event, _id, word, translation)} 
+                        onClick={(event) => handleClickEvent(event, _id, word, translation)}
+                        data-border={borderColor} 
                     >      
                         <Input value={wordState} onChange={wordHandler} ref={inputEditModeRef} />
                         <Input value={translationState} onChange={translationHandler} />
@@ -206,7 +209,9 @@ const Word = ({ _id, display, initial, translation, word }) => {
                 <WordFunctions 
                     word={wordState} 
                     translation={translationState} 
-                    initialValue={{word, translation}} 
+                    initialValue={{word, translation}}
+                    editMode={editMode}
+                    setEditMode={setEditMode} 
                     setInitialValue={setInitialValue} 
                     setOutSideClickListener={setOutSideClickListener}
                     _id={_id} 
@@ -263,6 +268,7 @@ const Word = ({ _id, display, initial, translation, word }) => {
                         ref={insideWordClickRef} 
                         onClick={(event) => handleClickEvent(event, _id, word, translation)} 
                         borderColor={borderColor}
+                        data-border={borderColor}
                     >
                             {word} 
                             <span className="translation" >
@@ -274,6 +280,8 @@ const Word = ({ _id, display, initial, translation, word }) => {
                     word={word} 
                     translation={translation} 
                     initialValue={{word, translation}} 
+                    editMode={editMode}
+                    setEditMode={setEditMode} 
                     setInitialValue={setInitialValue} 
                     setOutSideClickListener={setOutSideClickListener}
                     _id={_id} 
@@ -282,13 +290,15 @@ const Word = ({ _id, display, initial, translation, word }) => {
             </Wrapper>
             }
             { outSideClickListener && 
+
             <OutSideClickHandler 
                 wordFromDbRef={wordFromDbRef} 
                 editBttnRef={editBttnRef} 
                 insideWordClickRef={insideWordClickRef}
-                borderColor={borderColor}
-                colorPalette={DEFAULT_WORD_COLOR, FOUND_WORD_COLOR}
                 setBorderColor={setBorderColor}
+                colorPalette={{DEFAULT_WORD_COLOR, FOUND_WORD_COLOR}}
+                editMode={editMode}
+                setEditMode={setEditMode}
                 setEditModeInTestMode={setEditModeInTestMode}
                 setOneClickFnCalled={setOneClickFnCalled}
                 setOutSideClickListener={setOutSideClickListener}

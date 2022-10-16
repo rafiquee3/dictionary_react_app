@@ -11,14 +11,21 @@ const Button = styled.button`
     color: white;
     font-size: 25px;
 `
-const WordFunctions = ({ _id, word, translation, initialValue, setInitialValue, setOutSideClickListener }, ref) => {
+const WordFunctions = ({ 
+        _id, 
+        editMode, 
+        setEditMode, 
+        word, 
+        translation, 
+        initialValue, 
+        setInitialValue, 
+        setOutSideClickListener }, ref) => {
+            
 const editBttnRef = useRef();
 
 const {
         user,
         setWords,
-        editMode,
-        setEditMode,
         id,
         setId,
         editedWordErrors,
