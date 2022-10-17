@@ -29,13 +29,15 @@ const OutSideClickHandler = (
                 setEditMode(false);
                 setIsEditBttnClicked(false);
                 setOutSideClickListener(false);
-
+            
+            // Click beyond the current word object closes the test mode
             } else if (testMode && insideWordClickRef.current && !insideWordClickRef.current.contains(event.target)) {
                 setEditModeInTestMode(false);
                 setOneClickFnCalled(false);
                 setOutSideClickListener(false);
-            // Click beyond the found object word restore its default value
-            } else if (!editMode && event.target.dataset?.border !== colorPalette.FOUND_WORD_COLOR) {
+
+            // Click beyond the found object word restore its default border color
+            } else if (!testMode && !editMode && event.target.dataset?.border !== colorPalette.FOUND_WORD_COLOR) {
                     setBorderColor(colorPalette.DEFAULT_WORD_COLOR);
                     setOutSideClickListener(false);
             }

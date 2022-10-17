@@ -92,16 +92,6 @@ const Word = ({ _id, display, initial, translation, word }) => {
         return translation;
     }
 
-/*     if (testMode) {
-        if (testInverseMode) {
-            //word = initial.word;
-            //translation = generateTranslationFromDb(initial.translation);
-            console.log(translation)
-        } else {
-            word = initial.translation;
-            translation = generateTranslationFromDb(initial.word);
-        }
-    } */
     const [initialWordValue, setInitialWordValue] = useState(word);
     const [initialTranslationValue, setInitialTranslationValue] = useState(translation);
     const [wordState, setWordState] = useState(word);

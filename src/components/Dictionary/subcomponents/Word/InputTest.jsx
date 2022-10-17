@@ -21,7 +21,7 @@ const InputTest = ({ tempTranslation, setTempTranslation, initialTranslation, se
     const inputHandler = (event) => {
 
         const typedInput = event.target.value;
-        
+        console.log(typedInput)
         if(typedInput)
         setTempTranslation(typedInput);
         
