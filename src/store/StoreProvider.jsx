@@ -11,6 +11,7 @@ const StoreProvider = ({children}) => {
     const [testMode, setTestMode] = useState(false);
     const [searchValue, setSearchValue] = useState('');
     const [searchMode, setSearchMode] = useState(false);
+    const [testInverseMode, setTestInverseMode] = useState(false);
 
     return (
         <StoreContext.Provider value={
@@ -33,6 +34,8 @@ const StoreProvider = ({children}) => {
                 setSearchValue,
                 searchMode, 
                 setSearchMode,
+                testInverseMode, 
+                setTestInverseMode
             }
         }>
             {children}

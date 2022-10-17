@@ -65,7 +65,9 @@ const Word = ({ _id, display, initial, translation, word }) => {
         setId,
         searchMode,
         testMode,
-        setTestMode, 
+        setTestMode,
+        testInverseMode,
+        setTestInverseMode, 
         searchValue, 
         setSearchValue,
         isEditBttnClicked, 
@@ -81,7 +83,7 @@ const Word = ({ _id, display, initial, translation, word }) => {
         
             const result = translation
             .split('')
-            .map(lettre => lettre = '_')
+            .map(lettre => lettre = '*')
             .join('');
 
             return result;
@@ -90,13 +92,18 @@ const Word = ({ _id, display, initial, translation, word }) => {
         return translation;
     }
 
-    if (testMode) {
-        word = initial.translation;
-        translation = generateTranslationFromDb(initial.word);
-
-        // if (reverseTestMode)
-    }
-
+/*     if (testMode) {
+        if (testInverseMode) {
+            //word = initial.word;
+            //translation = generateTranslationFromDb(initial.translation);
+            console.log(translation)
+        } else {
+            word = initial.translation;
+            translation = generateTranslationFromDb(initial.word);
+        }
+    } */
+    const [initialWordValue, setInitialWordValue] = useState(word);
+    const [initialTranslationValue, setInitialTranslationValue] = useState(translation);
     const [wordState, setWordState] = useState(word);
     const [translationState, setTranslationState] = useState(translation);
     const [tempTranslation, setTempTranslation] = useState(translation);
@@ -165,7 +172,7 @@ const Word = ({ _id, display, initial, translation, word }) => {
         setTempTranslation(translation);
         setBorderColor(DEFAULT_WORD_COLOR);
         
-    }, [testMode])
+    }, [testMode, testInverseMode])
 
     useEffect(() => {
         console.log('useEffect word')
@@ -179,6 +186,28 @@ const Word = ({ _id, display, initial, translation, word }) => {
             }
         }
     }, [searchMode])
+
+    useEffect(() => {
+        console.log('word connect')
+        return () => {
+            console.log('word disconnect');
+        }
+    }, [])
+
+
+    useEffect(() => {
+        if(testMode) {
+            if (testInverseMode) {
+                setInitialWordValue(initial.word);
+                setInitialTranslationValue(initial.translation);
+                setTempTranslation(generateTranslationFromDb(initial.translation));
+                console.log('use effect testinverse mode')
+            } else {
+                setInitialWordValue(initial.translation);
+                setInitialTranslationValue(initial.word);
+                setTempTranslation(generateTranslationFromDb(initial.word));
+        }
+    }}, [testMode, testInverseMode])
 
     const errorWord = typeof editedWordErrors !== 'string' ? editedWordErrors
     .filter(message => message.field === "word")
@@ -234,14 +263,13 @@ const Word = ({ _id, display, initial, translation, word }) => {
                             { editModeInTestMode ? 
 
                             <div>
-                                {word} 
+                                {initialWordValue} 
                                 <span className="translation" >
                                     &nbsp;-&nbsp;
                                     <InputTest 
                                         setTempTranslation={setTempTranslation} 
                                         tempTranslation={tempTranslation} 
-                                        inititalValue={translation}
-                                        initialTranslation={initial.word}
+                                        initialTranslation={initialTranslationValue}
                                         setBorderColor={setBorderColor}
                                     />
                                 </span>
@@ -250,7 +278,7 @@ const Word = ({ _id, display, initial, translation, word }) => {
                             :
 
                             <div>
-                                {word} 
+                                {initialWordValue} 
                                 <span className="translation" >
                                     &nbsp;-&nbsp;{tempTranslation}
                                 </span>

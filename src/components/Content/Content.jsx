@@ -9,6 +9,7 @@ const Main = styled.main`
     display: flex;
     margin-top: 60px;
     flex-direction: column;
+    align-items: center;
 `
 
 const Content = () => {

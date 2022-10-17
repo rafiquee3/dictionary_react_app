@@ -15,9 +15,9 @@ const Input = styled.div`
     }
 `
 
-const InputTest = ({ inititalValue, tempTranslation, setTempTranslation, initialTranslation, setBorderColor }) => {
+const InputTest = ({ tempTranslation, setTempTranslation, initialTranslation, setBorderColor }) => {
     const [txtColor, setTxtColor] = useState('black');
-    
+    console.log(initialTranslation)
     const inputHandler = (event) => {
 
         const typedInput = event.target.value;
@@ -40,7 +40,7 @@ const InputTest = ({ inititalValue, tempTranslation, setTempTranslation, initial
     }
 
     const mask = [];
-    inititalValue.split('').map(value => mask.push('c'));
+    tempTranslation.split('').map(value => mask.push('c'));
     
     return (
             <Input color={txtColor}>
