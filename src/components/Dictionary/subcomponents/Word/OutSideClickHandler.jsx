@@ -10,7 +10,9 @@ const OutSideClickHandler = (
         setEditMode, 
         setEditModeInTestMode, 
         setOneClickFnCalled,  
-        setOutSideClickListener, 
+        setOutSideClickListener,
+        showHint,
+        setShowHint, 
         insideWordClickRef, 
         wordFromDbRef, 
         }) => {
@@ -23,7 +25,9 @@ const OutSideClickHandler = (
     useEffect(() => {
         const handleClickOutside = (event) => {
             console.log('click outside')
-         
+            
+        
+
             // Click beyond the current word object closes the edition mode
             if (wordFromDbRef.current && !wordFromDbRef.current.contains(event.target) && !editBttnRef.current.ref.contains(event.target)) {
                 setEditMode(false);
@@ -32,9 +36,11 @@ const OutSideClickHandler = (
             
             // Click beyond the current word object closes the test mode
             } else if (testMode && insideWordClickRef.current && !insideWordClickRef.current.contains(event.target)) {
+                console.log('im in')
                 setEditModeInTestMode(false);
                 setOneClickFnCalled(false);
                 setOutSideClickListener(false);
+                setShowHint(false);
 
             // Click beyond the found object word restore its default border color
             } else if (!testMode && !editMode && event.target.dataset?.border !== colorPalette.FOUND_WORD_COLOR) {

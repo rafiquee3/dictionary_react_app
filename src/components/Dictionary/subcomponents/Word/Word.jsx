@@ -6,10 +6,26 @@ import { StoreContext } from "../../../../store/StoreProvider";
 import OutSideClickHandler from "./OutSideClickHandler";
 
 // hard to learn mode
-// change side in test mode
+// hint translation
 // indicator advise in test mode
 // word detail mode with addnotation feature
 // loading page progress bar css
+// click wordDbRef focus on input
+// print all word to pdf
+
+
+/* function shuffle(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1)); // random index from 0 to i
+  
+      // swap elements array[i] and array[j]
+      // we use "destructuring assignment" syntax to achieve that
+      // you'll find more details about that syntax in later chapters
+      // same can be written as:
+      // let t = array[i]; array[i] = array[j]; array[j] = t
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  } */
 
 const WordFromDb = styled.div`
     display: flex;
@@ -57,6 +73,26 @@ const Wrapper = styled.div`
     align-items: center;
     
 `
+
+const Button = styled.button`
+    background: ${props => props.bgcolor || 'white'};
+    border-radius: 4px;
+    border-color: #584894;
+    padding: 15px;
+    color: black;
+`
+
+const Hint = styled.div`
+    display: flex; 
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #DB9EA2;
+    border-radius: 12px;
+    font-size: 17px;
+    color: #320306;
+`
+
 const Word = ({ _id, display, initial, translation, word }) => {
     
     const {
@@ -83,7 +119,7 @@ const Word = ({ _id, display, initial, translation, word }) => {
         
             const result = translation
             .split('')
-            .map(lettre => lettre = '*')
+            .map(lettre => lettre = '_')
             .join('');
 
             return result;
@@ -102,6 +138,7 @@ const Word = ({ _id, display, initial, translation, word }) => {
     const [oneClickFnCalled, setOneClickFnCalled] = useState(false);
     const [outSideClickListener, setOutSideClickListener] = useState(false);
     const [borderColor, setBorderColor] = useState('');
+    const [showHint, setShowHint] = useState(false);
 
     const wordFromDbRef = useRef(null);
     const insideWordClickRef = useRef(null);
@@ -184,7 +221,6 @@ const Word = ({ _id, display, initial, translation, word }) => {
         }
     }, [])
 
-
     useEffect(() => {
         if(testMode) {
             if (testInverseMode) {
@@ -253,7 +289,7 @@ const Word = ({ _id, display, initial, translation, word }) => {
                             { editModeInTestMode ? 
 
                             <div>
-                                {initialWordValue} 
+                                {initialWordValue}
                                 <span className="translation" >
                                     &nbsp;-&nbsp;
                                     <InputTest 
@@ -263,8 +299,9 @@ const Word = ({ _id, display, initial, translation, word }) => {
                                         setBorderColor={setBorderColor}
                                     />
                                 </span>
+                                <Button onClick={() => setShowHint((prev) => !prev)}>Help</Button>
                             </div>
-
+                            
                             :
 
                             <div>
@@ -275,6 +312,8 @@ const Word = ({ _id, display, initial, translation, word }) => {
                             </div>
                             }      
                     </WordFromDb> 
+                    { showHint &&  <Hint>{initialTranslationValue}</Hint>}
+                   
                 </div>       
             </Wrapper>
 
@@ -320,6 +359,8 @@ const Word = ({ _id, display, initial, translation, word }) => {
                 setEditModeInTestMode={setEditModeInTestMode}
                 setOneClickFnCalled={setOneClickFnCalled}
                 setOutSideClickListener={setOutSideClickListener}
+                showHint={showHint}
+                setShowHint={setShowHint}
             /> 
             }
         </>
