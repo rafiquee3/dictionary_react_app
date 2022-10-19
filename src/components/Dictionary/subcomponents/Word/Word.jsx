@@ -6,8 +6,6 @@ import { StoreContext } from "../../../../store/StoreProvider";
 import OutSideClickHandler from "./OutSideClickHandler";
 
 // hard to learn mode
-// hint translation
-// indicator advise in test mode
 // word detail mode with addnotation feature
 // loading page progress bar css
 // click wordDbRef focus on input
@@ -297,6 +295,7 @@ const Word = ({ _id, display, initial, translation, word }) => {
                                         tempTranslation={tempTranslation} 
                                         initialTranslation={initialTranslationValue}
                                         setBorderColor={setBorderColor}
+                                        _id = {_id}
                                     />
                                 </span>
                                 <Button onClick={() => setShowHint((prev) => !prev)}>Help</Button>
