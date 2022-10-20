@@ -4,8 +4,8 @@ import WordFunctions from "../WordFunctions/WordFunctions";
 import InputTest from "./InputTest";
 import { StoreContext } from "../../../../store/StoreProvider";
 import OutSideClickHandler from "./OutSideClickHandler";
+import request from "../../../../helpers/request"
 
-// hard to learn mode
 // word detail mode with addnotation feature
 // loading page progress bar css
 // click wordDbRef focus on input
@@ -108,6 +108,10 @@ const Word = ({ _id, display, initial, translation, word }) => {
         setIsEditBttnClicked,
         editedWordErrors,
         setEditedWordErrors,
+        user,
+        words,
+        setWords,
+        sortByAz,
 
     } = useContext(StoreContext);
 
@@ -145,6 +149,19 @@ const Word = ({ _id, display, initial, translation, word }) => {
 
     const DEFAULT_WORD_COLOR = "#7E5675";
     const FOUND_WORD_COLOR = 'blue';
+
+    const getNewListOfWords = async (collectionName) => {
+        const {data, status} = await request.post(
+            '/words/',
+            {collection: collectionName}
+        );
+        if(status === 200) {
+            setWords(data)
+        }
+        if(data.message) {
+            setEditedWordErrors(data.message);
+        }
+    }
 
     const wordHandler = event => {
         setWordState(event.target.value);
@@ -211,13 +228,14 @@ const Word = ({ _id, display, initial, translation, word }) => {
             }
         }
     }, [searchMode])
-
+    
+    // When the difficulty level changes make a word update
     useEffect(() => {
-        console.log('word connect')
-        return () => {
-            console.log('word disconnect');
-        }
-    }, [])
+      if (testMode) {
+        let collectionName = user;
+        getNewListOfWords(collectionName);
+      }
+    }, [editModeInTestMode])
 
     useEffect(() => {
         if(testMode) {

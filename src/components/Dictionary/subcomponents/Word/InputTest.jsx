@@ -17,7 +17,12 @@ const Input = styled.div`
     }
 `
 
-const InputTest = ({ tempTranslation, setTempTranslation, initialTranslation, setBorderColor, _id }) => {
+const InputTest = ({ 
+    tempTranslation, 
+    setTempTranslation, 
+    initialTranslation, 
+    setBorderColor, 
+    _id }) => {
    
     const [txtColor, setTxtColor] = useState('black');
     const [blockLvlChange, setBlockLvlChange] = useState(false);
@@ -50,8 +55,7 @@ const InputTest = ({ tempTranslation, setTempTranslation, initialTranslation, se
     const inputHandler = (event) => {
 
         const typedInput = event.target.value;
-        console.log(typedInput)
-        console.log(blockLvlChange)
+   
         if(typedInput)
         setTempTranslation(typedInput);
 

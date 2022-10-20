@@ -69,7 +69,7 @@ const LoginForm = () => {
             {collection: login}
         );
         if(status === 200) {
-            setWords(data)
+            setWords(data);
         }
         if(data.message) {
             setValidateMessage(data.message);

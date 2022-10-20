@@ -18,19 +18,24 @@ const Paginator = ({ howMany, words}) => {
         searchMode, 
         setSearchMode,
         editedWordErrors, 
-        setEditedWordErrors,} = useContext(StoreContext);
+        setEditedWordErrors,
+        sortByAz,
+        setSortByAz,
+        sortByDifficultyLvl, 
+        setSortByDifficultyLvl } = useContext(StoreContext);
 
     const wordsLength = words.length;
     const numberOfPages = Math.ceil(wordsLength / howMany);
-    const wordsArr = [...words];
+    let wordsArr = [...words];
 
     let wordElements = [...words];
     let prevPage = false;
     let searchPage = false;
     let searchNotFound = false;
-
+    
+    // Generate new array [start, ... , end]
     const range = (start, end) => {
-        return Array(end - start + 1).fill().map((_, idx) => start + idx)
+        return Array(end - start + 1).fill().map((_, i) => start + i)
     }
 
     const showPage = (index) => {
@@ -38,9 +43,22 @@ const Paginator = ({ howMany, words}) => {
         if (wordElements.length === 0) return 'Add a new word';
 
         const allSlice = [];
-        wordElements = wordElements.map((link, i) => link = Object.assign(link, {i}));
-        const copyOfWordElements = [...wordElements];
 
+        if (sortByDifficultyLvl) {
+            console.log('sort d lvl')
+            wordElements.sort((a, b) => a.difficulty - b.difficulty);
+            wordsArr = wordElements; 
+        }
+
+        if (sortByAz) {
+            console.log('sort by az')
+            wordElements.sort((a, b) => a.word < b.word ? 1 : -1);
+            wordsArr = wordElements; 
+        }
+
+        console.log(wordElements)
+        wordElements = wordElements.map((word, i) => word = Object.assign(word, {i}));
+    
         for (let i = 0; i < numberOfPages; i++) {
             const slice = wordElements.splice(-howMany);
             allSlice.push(slice);
@@ -65,7 +83,7 @@ const Paginator = ({ howMany, words}) => {
                 searchNotFound = true;
             }
         }
-
+        console.log(allSlice)
         const leftScope = allSlice[index][0].i;
         const rightScope = allSlice[index][allSlice[index].length - 1].i;
         const scopeArr = range(leftScope, rightScope);
@@ -86,6 +104,7 @@ const Paginator = ({ howMany, words}) => {
                     </WordWrapper> )
             }
         })
+
         return result.reverse();
     }
 
