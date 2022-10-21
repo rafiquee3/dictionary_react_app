@@ -1,7 +1,7 @@
 import React, { useContext, useRef, useState, useEffect } from "react";
-import Modal from "../../Modal/Modal";
-import useModal from "../../Modal/useModal";
-import { StoreContext } from "../../../store/StoreProvider";
+import Modal from "../../../Modal/Modal";
+import useModal from "../../../Modal/useModal";
+import { StoreContext } from "../../../../store/StoreProvider";
 import styled, { css } from 'styled-components';
 
 const Button = styled.button`

@@ -13,6 +13,7 @@ const Paginator = ({ howMany, words}) => {
     const {
         page, 
         setPage, 
+        setWords,
         searchValue, 
         setSearchValue,
         searchMode, 

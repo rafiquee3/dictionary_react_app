@@ -7,7 +7,6 @@ import OutSideClickHandler from "./OutSideClickHandler";
 import request from "../../../../helpers/request"
 
 // word detail mode with addnotation feature
-// loading page progress bar css
 // click wordDbRef focus on input
 // print all word to pdf
 
@@ -228,7 +227,7 @@ const Word = ({ _id, display, initial, translation, word }) => {
             }
         }
     }, [searchMode])
-    
+
     // When the difficulty level changes make a word update
     useEffect(() => {
       if (testMode) {

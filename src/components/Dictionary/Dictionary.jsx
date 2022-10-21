@@ -47,7 +47,7 @@ const Dictionary = () => {
         setLoadProgress(calculateProgress());
 
     }, [page])
-
+    
     return (
         <>  
             <LoadPageStatus><LoadProgress width={loadProgress}/></LoadPageStatus>

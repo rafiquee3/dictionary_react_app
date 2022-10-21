@@ -1,8 +1,9 @@
 import React, { useContext } from "react";
 import AddWordForm from "../Dictionary/subcomponents/AddWordForm/AddWordForm";
 import LoginForm from "../LoginForm/LoginForm";
-import SearchForm from "../Dictionary/SearchForm/SearchForm";
-import styled, { css } from 'styled-components';
+import MemoMode from "../Dictionary/subcomponents/MemoMode/MemoMode";
+import SearchForm from "../Dictionary/subcomponents/SearchForm/SearchForm";
+import styled from 'styled-components';
 import { StoreContext } from "../../store/StoreProvider";
 
 const Wrapper = styled.header`
@@ -29,7 +30,7 @@ const Button = styled.button`
 `
 
 const Header = () => {
-    const { testMode, setTestMode, page, setPage} = useContext(StoreContext);
+    const { testMode, setTestMode, user } = useContext(StoreContext);
     
     const handleOnClick = () => {
         setTestMode(!testMode);
@@ -42,6 +43,7 @@ const Header = () => {
                 <AddWordForm />
                 <SearchForm />
                 <Button onClick={handleOnClick}> { testMode ? 'results' : 'test'} </Button>
+                {user && <MemoMode />}
                 <LoginForm />
             </Wrapper>
         </>
