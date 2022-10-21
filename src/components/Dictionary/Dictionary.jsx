@@ -35,9 +35,9 @@ const Dictionary = () => {
     } = useContext(StoreContext);
 
     const calculateProgress = () => {
-        const howManyPages = words.length / showSize;
-        const progress = Math.round((page + 1/ howManyPages) * 100);
-
+        const howManyPages = Math.ceil(words.length / showSize);
+        const progress = Math.ceil(((page + 1)/ howManyPages) * 100);
+       
         return progress + '%';
     }
 
@@ -45,7 +45,7 @@ const Dictionary = () => {
     
     useEffect(() => {
         setLoadProgress(calculateProgress());
-        
+
     }, [page])
 
     return (
