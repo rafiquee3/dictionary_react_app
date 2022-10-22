@@ -89,12 +89,7 @@ const MemoMode = () => {
         <Modal  isShowing={isMemoModeShowed}>
             <Form ref={modalRef} onSubmit={toggleSubmit} method="post" onKeyPress={event => handleKeypress(event)}>       
                 <CloseButton onClick={() => handleCloseBttn()}>X</CloseButton>
-              
-                
-                <MemoItem currentWord={currentWord} setCurrentWord={setCurrentWord} index={{currentIndex, setCurrentIndex}}/>
-
-                <Button type="submit" value="search" bgcolor="#584894">search</Button>
-          
+                <MemoItem currentWord={currentWord} setCurrentWord={setCurrentWord} index={{currentIndex, setCurrentIndex}} words={allWords}/>
             </Form>
         </Modal>
         </>

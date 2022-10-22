@@ -1,8 +1,8 @@
-import React, { useContext, useEffect, forwardRef, useState } from "react";
+import React, { useContext, useState } from "react";
 import styled, { css } from 'styled-components';
 import {StoreContext} from "../../../../store/StoreProvider";
+import {increaseLvlDifficulty, decreaseLvlDifficulty} from "../../../../helpers/dbCallFunctions"
 import InputMask from 'react-input-mask';
-import request from '../../../../helpers/request'
 
 const Input = styled.div`
     display: inline-block;
@@ -22,35 +22,12 @@ const InputTest = ({
     setTempTranslation, 
     initialTranslation, 
     setBorderColor, 
-    _id }) => {
+    _id 
+    }) => {
    
     const [txtColor, setTxtColor] = useState('black');
     const [blockLvlChange, setBlockLvlChange] = useState(false);
     const { user } = useContext(StoreContext);
-
-    const increaseLvlDifficulty = async (collectionName) => {
-        const {data, status} = await request.put(
-            `/words/${user}/${_id}`
-        );
-        if(status === 200) {
-            console.log('difficulty level increase');
-        }
-        if(data.message) {
-            //setValidateMessage(data.message);
-        }
-    }
-
-    const decreaseLvlDifficulty = async (collectionName) => {
-        const {data, status} = await request.put(
-            `/words/dec/${user}/${_id}`
-        );
-        if(status === 200) {
-            console.log('difficulty level decrease');
-        }
-        if(data.message) {
-            //setValidateMessage(data.message);
-        }
-    }
 
     const inputHandler = (event) => {
 
@@ -65,7 +42,7 @@ const InputTest = ({
             
             if(typedInput != blockLvlChange) {
                 setBlockLvlChange(typedInput)
-                increaseLvlDifficulty();
+                increaseLvlDifficulty(user, _id);
             }
 
             return;
@@ -77,7 +54,7 @@ const InputTest = ({
 
             if(typedInput != blockLvlChange) {
                 setBlockLvlChange(typedInput)
-                decreaseLvlDifficulty();
+                decreaseLvlDifficulty(user, _id);
             }
 
         } else {

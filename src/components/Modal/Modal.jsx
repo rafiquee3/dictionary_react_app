@@ -30,8 +30,7 @@ const ModalContent = styled.div`
     position: relative;
     margin: auto;
     border-radius: 5px;
-    max-width: 500px;
-    width: 80%;
+    max-width: 700px;
 `
 
 const Modal = ({ isShowing, children }) =>
