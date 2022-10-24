@@ -89,7 +89,13 @@ const MemoMode = () => {
         <Modal  isShowing={isMemoModeShowed}>
             <Form ref={modalRef} onSubmit={toggleSubmit} method="post" onKeyPress={event => handleKeypress(event)}>       
                 <CloseButton onClick={() => handleCloseBttn()}>X</CloseButton>
-                <MemoItem currentWord={currentWord} setCurrentWord={setCurrentWord} index={{currentIndex, setCurrentIndex}} words={allWords}/>
+                <MemoItem 
+                    currentWord={currentWord} 
+                    setCurrentWord={setCurrentWord} 
+                    index={{currentIndex, setCurrentIndex}} 
+                    words={allWords} 
+                    toggleMemoMode={toggleMemoMode}
+                />
             </Form>
         </Modal>
         </>
