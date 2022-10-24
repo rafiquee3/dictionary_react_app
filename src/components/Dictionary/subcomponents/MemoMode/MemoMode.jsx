@@ -31,9 +31,11 @@ const Form = styled.form`
 
 const MemoMode = () => {
     const {
-        editedWordErrors, 
+        sortByAz,
+        sortByDifficultyLvl, 
         setEditedWordErrors,
-        words 
+        words,
+        setWords, 
     
     } = useContext(StoreContext);
 
@@ -75,14 +77,26 @@ const MemoMode = () => {
         };
       }, [ toggleMemoMode ]);
 
-    const handleKeypress = event => {
-    
+    const handleKeypress = event => {    
         if (event.code === 'Enter') {
             toggleSubmit(event);
         }
     };
-    console.log(currentWord)
-    console.log(words[0])
+/* 
+    useEffect(() => {
+        if (sortByDifficultyLvl) {
+            setAllWords(words.sort((a, b) => a.difficulty - b.difficulty));         
+        }
+        if (sortByAz) {
+            setAllWords(words.sort((a, b) => a.word < b.word ? 1 : -1));
+        }
+       /*  if (!sortByDifficultyLvl && !sortByAz) {
+            setAllWords(words);
+        } 
+    }, [sortByAz, sortByDifficultyLvl]); 
+    
+*/
+
     return (
         <>
         <Button onClick={() => openOrClosedModal()} bgcolor="#9583DB">Memo</Button>

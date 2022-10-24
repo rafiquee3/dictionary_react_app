@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
+import HelpBar from "../HelpBar/HelpBar";
 import styled from 'styled-components';
 import { StoreContext } from "../../../../store/StoreProvider";
 import {increaseLvlDifficulty, decreaseLvlDifficulty} from "../../../../helpers/dbCallFunctions"
@@ -39,7 +40,11 @@ const MemoItem = ({currentWord, setCurrentWord, toggleMemoMode, index, words}) =
     const [trainingDone, setTrainingDone] = useState(false);
     const [goodAnswer, setGoodAnswer] = useState(0);
     const [badAnswer, setBadAnswer] = useState(0);
-    const {user} = useContext(StoreContext);
+    const {
+        user, 
+        sortByAz,
+        sortByDifficultyLvl, 
+    } = useContext(StoreContext);
 
     const changeWord = () => {
         if(index.currentIndex > 0) {
@@ -79,10 +84,11 @@ const MemoItem = ({currentWord, setCurrentWord, toggleMemoMode, index, words}) =
             index.setCurrentIndex(words.length - 1);
             setCurrentWord(words[index.currentIndex]);
         }
-    }, [])
+    }, [sortByAz, sortByDifficultyLvl])
 
     return (
         <>  
+            {!trainingDone && <HelpBar />}
             {!trainingDone ?
             <>
                 <Wrapper>
@@ -100,8 +106,8 @@ const MemoItem = ({currentWord, setCurrentWord, toggleMemoMode, index, words}) =
             :
             <>
                 <Wrapper>
-                    <WordWrapper>Good answer: {goodAnswer}</WordWrapper>
-                    <WordWrapper>Bad answer: {badAnswer}</WordWrapper>
+                    <WordWrapper color="green">Good answer: {goodAnswer}</WordWrapper>
+                    <WordWrapper color="red">Bad answer: {badAnswer}</WordWrapper>
                 </Wrapper>
                 <ButtonWrapper>
                     <Button  onClick={() => toggleAgainBttn()}>again</Button>
