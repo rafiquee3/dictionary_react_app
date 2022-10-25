@@ -17,6 +17,8 @@ const StoreProvider = ({children}) => {
     const [sortByAz, setSortByAz] = useState(false);
     const [showSize, setShowSize] = useState(5);
     const [showMemoMode, setShowMemoMode] = useState(false);
+    const [showAddWord, setShowAddWord] = useState(false);
+    const [showSearch, setShowSearch] = useState(false);
 
     return (
         <StoreContext.Provider value={
@@ -49,6 +51,10 @@ const StoreProvider = ({children}) => {
                 setShowSize,
                 showMemoMode, 
                 setShowMemoMode,
+                showAddWord, 
+                setShowAddWord,
+                showSearch, 
+                setShowSearch,
             }
         }>
             {children}

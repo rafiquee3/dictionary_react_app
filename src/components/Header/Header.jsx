@@ -30,7 +30,17 @@ const Button = styled.button`
 `
 
 const Header = () => {
-    const { testMode, setTestMode, user, showMemoMode, setShowMemoMode } = useContext(StoreContext);
+    const { 
+        testMode, 
+        setTestMode, 
+        user, 
+        showMemoMode, 
+        setShowMemoMode, 
+        showSearch, 
+        setShowSearch,
+        showAddWord, 
+        setShowAddWord, 
+    } = useContext(StoreContext);
     
     const handleOnClick = () => {
         setTestMode(!testMode);
@@ -38,16 +48,24 @@ const Header = () => {
     const handleMemoClick = () => {
         setShowMemoMode(!showMemoMode);
     }
+    const handleSearchClick = () => {
+        setShowSearch(!showSearch);
+    }
+    const handleNewWordClick = () => {
+        setShowAddWord(!showAddWord);
+    }
 
     return (
         <>
             <Wrapper>
                 <p>Dictionary</p>
-                <AddWordForm />
-                <SearchForm />
-                <Button onClick={handleOnClick}> { testMode ? 'results' : 'test'} </Button>
-                <Button onClick={handleMemoClick}>Memo mode</Button>
-                {user && showMemoMode && <MemoMode />}
+                { user && !testMode && <Button onClick={ () => handleNewWordClick() }>New word</Button> }
+                { user && !testMode && <Button onClick={ () => handleSearchClick() }> Search </Button> }
+                { user && <Button onClick={ () => handleOnClick() }> { testMode ? 'results' : 'test' } </Button> }
+                { user && !testMode && <AddWordForm/> }
+                { user && !testMode && <Button onClick={ () => handleMemoClick() }>Memo mode</Button> }
+                { user && showSearch && <SearchForm /> }
+                { user && showMemoMode && <MemoMode /> }
                 <LoginForm />
             </Wrapper>
         </>

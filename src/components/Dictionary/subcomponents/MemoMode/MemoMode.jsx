@@ -55,7 +55,6 @@ const MemoMode = () => {
         const handleClickOutside = (event) => {
             if (modalRef.current && !modalRef.current.contains(event.target)) {
                 setShowMemoMode(false); 
-            
           }
         };
         document.addEventListener('click', handleClickOutside, true);

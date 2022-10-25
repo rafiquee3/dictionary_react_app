@@ -1,6 +1,5 @@
 import React, { useContext, useRef, useState, useEffect } from "react";
 import Modal from "../../../Modal/Modal";
-import useModal from "../../../Modal/useModal";
 import { StoreContext } from "../../../../store/StoreProvider";
 import styled, { css } from 'styled-components';
 
@@ -38,7 +37,6 @@ const Input = styled.input`
 const SearchForm = () => {
     const [search, setSearch] = useState('');
     const [validateMessage, setValidateMessage] = useState('');
-    const {isShowing: isSearchFormShowed, toggle: toggleSearchForm} = useModal();
     const modalRef = useRef(null);
 
     const {
@@ -46,6 +44,8 @@ const SearchForm = () => {
         setSearchValue,
         searchMode, 
         setSearchMode,
+        showSearch, 
+        setShowSearch,
         editedWordErrors, 
         setEditedWordErrors,
         words } = useContext(StoreContext);
@@ -59,9 +59,9 @@ const SearchForm = () => {
         setEditedWordErrors('');
     }
 
-    const openOrClosedModal = () => {
+    const closeModal = () => {
         clearInputField();
-        toggleSearchForm();
+        setShowSearch(prev => !prev)
     }
 
     const searchWordInDb = (word) => {
@@ -76,7 +76,7 @@ const SearchForm = () => {
         setSearchMode(true);
        
         if (searchResult !== undefined) {
-            openOrClosedModal();
+            closeModal();
             setValidateMessage('');
         } else if (searchResult === undefined) {
             setValidateMessage('this word is not in the dictionary');
@@ -84,46 +84,41 @@ const SearchForm = () => {
     }
 
     const handleCloseBttn = () => {
-      setSearchMode(false);
-      openOrClosedModal();
+        setSearchMode(false);
+        closeModal();
     }
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-          if (modalRef.current && !modalRef.current.contains(event.target)) {
-            if(!search) {
-              setSearchMode(false);
-              openOrClosedModal();
+            if (modalRef.current && !modalRef.current.contains(event.target)) {
+                if(!search) {
+                setSearchMode(false);
+                closeModal();
             }
           }
         };
         document.addEventListener('click', handleClickOutside, true);
         return () => {
-          document.removeEventListener('click', handleClickOutside, true); // 3th arg listen on capturing phase instead off bubbling phase
+            document.removeEventListener('click', handleClickOutside, true); // 3th arg listen on capturing phase instead off bubbling phase
         };
-      }, [ toggleSearchForm ]);
+      }, []);
 
-    const handleKeypress = event => {
-    
+    const handleKeypress = event => { 
         if (event.code === 'Enter') {
-          toggleSubmit(event);
+            toggleSubmit(event);
         }
     };
 
     return (
         <>
-        <Button onClick={() => openOrClosedModal()} bgcolor="#9583DB">Search</Button>
-        <Modal  isShowing={isSearchFormShowed}>
-            <Form ref={modalRef} onSubmit={toggleSubmit} method="post" onKeyPress={event => handleKeypress(event)}>       
-                <CloseButton onClick={() => handleCloseBttn()}>X</CloseButton>
-                {validateMessage}
-                
-                <Input type="text" placeholder="Search..." value={search} onChange={searchHandler}/>
-
-                <Button type="submit" value="search" bgcolor="#584894">search</Button>
-          
-            </Form>
-        </Modal>
+            <Modal  isShowing={showSearch}>
+                <Form ref={modalRef} onSubmit={toggleSubmit} method="post" onKeyPress={event => handleKeypress(event)}>       
+                    <CloseButton onClick={() => handleCloseBttn()}>X</CloseButton>
+                    {validateMessage}             
+                    <Input type="text" placeholder="Search..." value={search} onChange={searchHandler}/>
+                    <Button type="submit" value="search" bgcolor="#584894">search</Button>
+                </Form>
+            </Modal>
         </>
     )
 }

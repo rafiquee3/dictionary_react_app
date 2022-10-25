@@ -1,9 +1,8 @@
 import React, { useContext, useRef, useState, useEffect } from "react";
 import request from '../../../../helpers/request'
 import Modal from "../../../Modal/Modal";
-import useModal from "../../../Modal/useModal";
 import { StoreContext } from "../../../../store/StoreProvider";
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 const Button = styled.button`
     background: ${props => props.bgcolor || 'white'};
@@ -40,27 +39,31 @@ const AddWordForm = () => {
     const [word, setWord] = useState('');
     const [translation, setTranslation] = useState('');
     const [validateMessage, setValidateMessage] = useState('');
-    const {isShowing: iswordFormShowed, toggle: toggleWordForm} = useModal();
-    const {user, setUser,  words, setWords, page, setPage} = useContext(StoreContext);
+
     const modalRef = useRef(null);
+
+    const {user, 
+  
+        setWords, 
+        setPage, 
+        showAddWord, 
+        setShowAddWord,
+    } = useContext(StoreContext);
 
     const wordHandler = event => {
         setWord(event.target.value);
     }
-  
     const translationHandler = event => {
         setTranslation(event.target.value);
     }
-
     const clearInputField = () => {
         setWord('');
         setTranslation('');
         setValidateMessage('');
     }
-
-    const openOrClosedModal = () => {
+    const closeModal = () => {
         clearInputField();
-        toggleWordForm();
+        setShowAddWord(false);
     }
     const getNewListOfWords = async (collectionName) => {
         const {data, status} = await request.post(
@@ -84,7 +87,7 @@ const AddWordForm = () => {
         );
         if(status === 200) {
             console.log(data)
-            toggleWordForm();
+            setShowAddWord(false);
             clearInputField();
             setPage(0);
             getNewListOfWords(collectionName);
@@ -98,24 +101,24 @@ const AddWordForm = () => {
     useEffect(() => {
         const handleClickOutside = (event) => {
 
-          if (modalRef.current && !modalRef.current.contains(event.target)) {
-            if(!word && !translation) {
+            if (modalRef.current && !modalRef.current.contains(event.target)) {
+                if(!word && !translation) {
 
-            openOrClosedModal();
+                closeModal();
+                }
             }
-          }
         };
         document.addEventListener('click', handleClickOutside, true);
         return () => {
-          document.removeEventListener('click', handleClickOutside, true); // 3th arg listen on capturing phase instead off bubbling phase
+            document.removeEventListener('click', handleClickOutside, true); // 3th arg listen on capturing phase instead off bubbling phase
         };
-      }, [ toggleWordForm ]);
+      }, []);
 
     const handleKeypress = event => {
     
-      if (event.code === 'Enter') {
-        toggleSubmit(event);
-      }
+        if (event.code === 'Enter') {
+            toggleSubmit(event);
+        }
     };
 
     const errorWord = typeof validateMessage !== 'string' ? validateMessage
@@ -130,19 +133,18 @@ const AddWordForm = () => {
 
     return (
         <>
-        <Button onClick={() => openOrClosedModal()} bgcolor="#9583DB">New word</Button>
-        <Modal  isShowing={iswordFormShowed}>
-            <Form ref={modalRef} onSubmit={toggleSubmit} method="post" onKeyPress={e => handleKeypress(e)}>       
-                <CloseButton onClick={() => openOrClosedModal()}>X</CloseButton>
-                
-                <Input type="text" placeholder="word" value={word} onChange={wordHandler}/>
-                {errorWord}
-                <Input type="translation" placeholder="translation" value={translation} onChange={translationHandler}/>
-                {errorTranslation}
-                <Button type="submit" value="word" bgcolor="#584894">word</Button>
-                {otherErrors}
-        </Form>
-        </Modal>
+            <Modal  isShowing={showAddWord}>
+                <Form ref={modalRef} onSubmit={toggleSubmit} method="post" onKeyPress={event => handleKeypress(event)}>       
+                    <CloseButton onClick={() => closeModal()}>X</CloseButton>
+                    
+                    <Input type="text" placeholder="word" value={word} onChange={wordHandler}/>
+                    {errorWord}
+                    <Input type="translation" placeholder="translation" value={translation} onChange={translationHandler}/>
+                    {errorTranslation}
+                    <Button type="submit" value="word" bgcolor="#584894">word</Button>
+                    {otherErrors}
+                </Form>
+            </Modal>
         </>
     )
 }
