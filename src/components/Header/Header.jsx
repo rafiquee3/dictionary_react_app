@@ -30,12 +30,15 @@ const Button = styled.button`
 `
 
 const Header = () => {
-    const { testMode, setTestMode, user } = useContext(StoreContext);
+    const { testMode, setTestMode, user, showMemoMode, setShowMemoMode } = useContext(StoreContext);
     
     const handleOnClick = () => {
         setTestMode(!testMode);
     }
-    
+    const handleMemoClick = () => {
+        setShowMemoMode(!showMemoMode);
+    }
+
     return (
         <>
             <Wrapper>
@@ -43,7 +46,8 @@ const Header = () => {
                 <AddWordForm />
                 <SearchForm />
                 <Button onClick={handleOnClick}> { testMode ? 'results' : 'test'} </Button>
-                {user && <MemoMode />}
+                <Button onClick={handleMemoClick}>Memo mode</Button>
+                {user && showMemoMode && <MemoMode />}
                 <LoginForm />
             </Wrapper>
         </>

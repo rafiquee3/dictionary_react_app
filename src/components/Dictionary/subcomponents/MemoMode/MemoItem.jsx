@@ -35,7 +35,7 @@ const ButtonWrapper = styled.div`
     justify-content: center;
 `
 
-const MemoItem = ({currentWord, setCurrentWord, toggleMemoMode, index, words}) => {
+const MemoItem = ({currentWord, setCurrentWord, index, words}) => {
     const [answerDone, setAnswerDone] = useState(false);
     const [trainingDone, setTrainingDone] = useState(false);
     const [goodAnswer, setGoodAnswer] = useState(0);
@@ -43,7 +43,8 @@ const MemoItem = ({currentWord, setCurrentWord, toggleMemoMode, index, words}) =
     const {
         user, 
         sortByAz,
-        sortByDifficultyLvl, 
+        sortByDifficultyLvl,
+        setShowMemoMode, 
     } = useContext(StoreContext);
 
     const changeWord = () => {
@@ -57,7 +58,9 @@ const MemoItem = ({currentWord, setCurrentWord, toggleMemoMode, index, words}) =
     const toggleAnswerBttn = () => setAnswerDone(true);
     const toggleAgainBttn = () => {
         index.setCurrentIndex(words.length - 1);
-        setCurrentWord(words[index.currentIndex]);
+        setCurrentWord(words[words.length - 1]);
+        setBadAnswer(0);
+        setGoodAnswer(0);  
         setTrainingDone(false);
     }
     const toggleEasyBttn = () => {   
@@ -77,9 +80,15 @@ const MemoItem = ({currentWord, setCurrentWord, toggleMemoMode, index, words}) =
         setAnswerDone(false);
         increaseLvlDifficulty(user, currentWord._id)
     }
+    const toggleExitBttn = () => {
+        setShowMemoMode(false);
+    }
 
     useEffect(() => {
-
+        if (!trainingDone) {
+            index.setCurrentIndex(words.length - 1);
+            setCurrentWord(words[index.currentIndex]);
+        }
         return () => {
             index.setCurrentIndex(words.length - 1);
             setCurrentWord(words[index.currentIndex]);
@@ -111,7 +120,7 @@ const MemoItem = ({currentWord, setCurrentWord, toggleMemoMode, index, words}) =
                 </Wrapper>
                 <ButtonWrapper>
                     <Button  onClick={() => toggleAgainBttn()}>again</Button>
-                    <Button bgcolor="red" onClick={() => toggleMemoMode()}>exit</Button>
+                    <Button bgcolor="red" onClick={() => toggleExitBttn()}>exit</Button>
                 </ButtonWrapper>
             </>
             }

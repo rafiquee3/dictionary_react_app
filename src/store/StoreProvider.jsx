@@ -14,9 +14,9 @@ const StoreProvider = ({children}) => {
     const [searchMode, setSearchMode] = useState(false);
     const [testInverseMode, setTestInverseMode] = useState(false);
     const [sortByDifficultyLvl, setSortByDifficultyLvl] = useState(false);
-    const [sortByLastAdded, setSortByLastAdded] = useState(false);
     const [sortByAz, setSortByAz] = useState(false);
     const [showSize, setShowSize] = useState(5);
+    const [showMemoMode, setShowMemoMode] = useState(false);
 
     return (
         <StoreContext.Provider value={
@@ -47,6 +47,8 @@ const StoreProvider = ({children}) => {
                 setTestInverseMode,
                 showSize, 
                 setShowSize,
+                showMemoMode, 
+                setShowMemoMode,
             }
         }>
             {children}

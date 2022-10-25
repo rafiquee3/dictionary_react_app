@@ -19,7 +19,7 @@ const CloseButton = styled.button`
     border: none;
     color: white;
 `
-const Form = styled.form`
+const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     background: #584894;
@@ -34,6 +34,8 @@ const MemoMode = () => {
         sortByAz,
         sortByDifficultyLvl, 
         setEditedWordErrors,
+        showMemoMode, 
+        setShowMemoMode,
         words,
         setWords, 
     
@@ -43,31 +45,16 @@ const MemoMode = () => {
     const [allWords, setAllWords] = useState(words);
     const [currentIndex, setCurrentIndex] = useState(length)
     const [currentWord, setCurrentWord] = useState(words[currentIndex]);
-   
-    const {isShowing: isMemoModeShowed, toggle: toggleMemoMode} = useModal();
     const modalRef = useRef(null);
 
-    const clearInputField = () => {
-        setEditedWordErrors('');
-    }
-
-    const openOrClosedModal = () => {
-        clearInputField();
-        toggleMemoMode();
-    }
-
-    const toggleSubmit = (event) => {
-        event.preventDefault();
-    }
-
     const handleCloseBttn = () => {
-      openOrClosedModal();
+        setShowMemoMode(false);    
     }
 
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (modalRef.current && !modalRef.current.contains(event.target)) {
-                openOrClosedModal();
+                setShowMemoMode(false); 
             
           }
         };
@@ -75,43 +62,43 @@ const MemoMode = () => {
         return () => {
             document.removeEventListener('click', handleClickOutside, true); // 3th arg listen on capturing phase instead off bubbling phase
         };
-      }, [ toggleMemoMode ]);
-
-    const handleKeypress = event => {    
-        if (event.code === 'Enter') {
-            toggleSubmit(event);
-        }
-    };
-/* 
+      }, []);
+ 
     useEffect(() => {
         if (sortByDifficultyLvl) {
-            setAllWords(words.sort((a, b) => a.difficulty - b.difficulty));         
-        }
-        if (sortByAz) {
-            setAllWords(words.sort((a, b) => a.word < b.word ? 1 : -1));
-        }
-       /*  if (!sortByDifficultyLvl && !sortByAz) {
-            setAllWords(words);
-        } 
+            let temp = [...words];
+            setAllWords(temp.sort((a, b) => a.difficulty - b.difficulty));
+            setCurrentIndex(temp.length - 1);
+            setCurrentWord(temp.sort((a, b) => a.difficulty - b.difficulty)[words.length - 1]);
+
+        } else if (sortByAz) {
+            let temp = [...words];
+            setAllWords(temp.sort((a, b) => a.word < b.word ? 1 : -1));
+            setCurrentIndex(temp.length - 1);
+            setCurrentWord(temp.sort((a, b) => a.word < b.word ? 1 : -1)[words.length - 1]);
+        
+        } else if (!sortByDifficultyLvl && !sortByAz) {
+            let temp = [...words];
+            setAllWords(temp);
+            setCurrentIndex(temp.length - 1);
+            setCurrentWord(temp[words.length - 1]);
+        }  
     }, [sortByAz, sortByDifficultyLvl]); 
     
-*/
 
     return (
         <>
-        <Button onClick={() => openOrClosedModal()} bgcolor="#9583DB">Memo</Button>
-        <Modal  isShowing={isMemoModeShowed}>
-            <Form ref={modalRef} onSubmit={toggleSubmit} method="post" onKeyPress={event => handleKeypress(event)}>       
-                <CloseButton onClick={() => handleCloseBttn()}>X</CloseButton>
-                <MemoItem 
-                    currentWord={currentWord} 
-                    setCurrentWord={setCurrentWord} 
-                    index={{currentIndex, setCurrentIndex}} 
-                    words={allWords} 
-                    toggleMemoMode={toggleMemoMode}
-                />
-            </Form>
-        </Modal>
+            <Modal  isShowing={showMemoMode}>
+                <Wrapper ref={modalRef}>       
+                    <CloseButton onClick={() => handleCloseBttn()}>X</CloseButton>
+                    <MemoItem 
+                        currentWord={currentWord} 
+                        setCurrentWord={setCurrentWord} 
+                        index={{currentIndex, setCurrentIndex}} 
+                        words={allWords} 
+                    />
+                </Wrapper>
+            </Modal>
         </>
     )
 }
