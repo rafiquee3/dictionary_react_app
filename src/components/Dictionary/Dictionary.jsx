@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { StoreContext } from "../../store/StoreProvider";
 import Paginator from '../Paginator/Paginate'
 import HelpBar from "./subcomponents/HelpBar/HelpBar";
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 const LoadPageStatus = styled.div`
     display: flex;
@@ -19,18 +19,9 @@ const LoadProgress = styled.div`
 
 const Dictionary = () => {
     const {
-        user, 
-        setUser, 
         words,
-        setWords,
         page,
-        setPage,
-        testMode, 
-        setTestMode, 
-        searchByDifficultyLvl, 
-        setsearchByDifficultyLvl,
         showSize, 
-        setShowSize,
 
     } = useContext(StoreContext);
 

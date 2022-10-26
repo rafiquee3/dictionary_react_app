@@ -1,8 +1,8 @@
-import React, { useContext, useState } from "react";
-import styled, { css } from 'styled-components';
-import {StoreContext} from "../../../../store/StoreProvider";
-import {increaseLvlDifficulty, decreaseLvlDifficulty} from "../../../../helpers/dbCallFunctions"
-import InputMask from 'react-input-mask';
+import React, { useEffect, forwardRef, useContext, useState } from "react";
+import styled from "styled-components";
+import { StoreContext } from "../../../../store/StoreProvider";
+import { increaseLvlDifficulty, decreaseLvlDifficulty } from "../../../../helpers/dbCallFunctions";
+import InputMask from "react-input-mask";
 
 const Input = styled.div`
     display: inline-block;
@@ -18,19 +18,19 @@ const Input = styled.div`
 `
 
 const InputTest = ({ 
-    tempTranslation, 
-    setTempTranslation, 
-    initialTranslation, 
-    setBorderColor, 
-    _id 
-    }) => {
+        tempTranslation, 
+        setTempTranslation, 
+        initialTranslation, 
+        setBorderColor, 
+        _id 
+
+    }, ref) => {
    
     const [txtColor, setTxtColor] = useState('black');
     const [blockLvlChange, setBlockLvlChange] = useState(false);
     const { user } = useContext(StoreContext);
 
     const inputHandler = (event) => {
-
         const typedInput = event.target.value;
    
         if(typedInput)
@@ -67,17 +67,19 @@ const InputTest = ({
     tempTranslation.split('').map(value => mask.push('c'));
     
     return (
-            <Input color={txtColor}>
-                <InputMask 
-                    className="inputTest" 
-                    mask={mask.join('')} 
-                    formatChars={{'c': '[a-z\']'}} 
-                    value={tempTranslation} 
-                    onChange={inputHandler} 
-                    autoFocus>
-                </InputMask>
-            </Input>
-        
+        <Input color={ txtColor }>
+            <InputMask 
+                className="inputTest" 
+                mask={ mask.join('') } 
+                formatChars={ {'c': '[a-z\']'} } 
+                value={ tempTranslation } 
+                onChange={ inputHandler }
+                ref={ref} 
+                autoFocus       
+            >
+            </InputMask>
+        </Input>
     )
 }
-export default InputTest;
+
+export default forwardRef(InputTest);

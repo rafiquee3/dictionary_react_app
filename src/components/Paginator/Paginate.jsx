@@ -1,7 +1,7 @@
 import React ,{ useContext, useEffect } from "react";
 import { StoreContext } from "../../store/StoreProvider";
 import LinkPage from "./LinkPage";
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import Word from "../Dictionary/subcomponents/Word/Word";
 
 const WordWrapper = styled.div`
@@ -9,26 +9,23 @@ const WordWrapper = styled.div`
     background: gray;
 `
 
-const Paginator = ({ howMany, words}) => {
+// eslint-disable-next-line react/prop-types
+const Paginator = ( { howMany, words} ) => {
     const {
         page, 
         setPage, 
-        setWords,
         searchValue, 
-        setSearchValue,
         searchMode, 
         setSearchMode,
-        editedWordErrors, 
-        setEditedWordErrors,
         sortByAz,
-        setSortByAz,
         sortByDifficultyLvl, 
-        setSortByDifficultyLvl } = useContext(StoreContext);
 
+    } = useContext(StoreContext);
+
+    // eslint-disable-next-line react/prop-types
     const wordsLength = words.length;
     const numberOfPages = Math.ceil(wordsLength / howMany);
     let wordsArr = [...words];
-
     let wordElements = [...words];
     let prevPage = false;
     let searchPage = false;
@@ -46,18 +43,15 @@ const Paginator = ({ howMany, words}) => {
         const allSlice = [];
 
         if (sortByDifficultyLvl) {
-            console.log('sort d lvl')
             wordElements.sort((a, b) => a.difficulty - b.difficulty);
             wordsArr = wordElements; 
         }
 
         if (sortByAz) {
-            console.log('sort by az')
             wordElements.sort((a, b) => a.word < b.word ? 1 : -1);
             wordsArr = wordElements; 
         }
 
-        console.log(wordElements)
         wordElements = wordElements.map((word, i) => word = Object.assign(word, {i}));
     
         for (let i = 0; i < numberOfPages; i++) {
@@ -71,7 +65,6 @@ const Paginator = ({ howMany, words}) => {
         }
        
         if(searchMode) {
-            console.log('SEARCH MODE')
             // searchValue.i is a global variable with the index of the searched object
             if(searchValue !== undefined) {
                 allSlice.forEach((element, i) => {
@@ -84,7 +77,7 @@ const Paginator = ({ howMany, words}) => {
                 searchNotFound = true;
             }
         }
-        console.log(allSlice)
+
         const leftScope = allSlice[index][0].i;
         const rightScope = allSlice[index][allSlice[index].length - 1].i;
         const scopeArr = range(leftScope, rightScope);
@@ -117,7 +110,6 @@ const Paginator = ({ howMany, words}) => {
     }
 
     useEffect(() => {
-        console.log('UseEffect 1 pagi')
         if (prevPage) {
             setPage(page - 1);
             prevPage = false;
@@ -126,19 +118,18 @@ const Paginator = ({ howMany, words}) => {
     }, [numberOfPages])
     
     useEffect(() => {
-        console.log('UseEffect 2 pagi')
         if (searchPage !== false) {
-            console.log('UseEffect 2 pagi w if searchPage')
             setPage(searchPage);
             searchPage = false;
             setSearchMode(false);
         }
+
         if (searchNotFound) {
             setSearchMode(false);
             
         }
     }, [searchMode])
-    console.log('reneruje paginate')
+
     return (
         <>  
             {showPage(page)}
