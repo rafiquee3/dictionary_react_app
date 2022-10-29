@@ -25,10 +25,10 @@ const OutSideClickHandler = (
     useEffect(() => {
         const handleClickOutside = (event) => {
 
-            if (testMode && insideWordClickRef.current.contains(event.target)) {
+          /*   if (testMode && insideWordClickRef.current.contains(event.target)) {
                 if(inputTestModeRef.current)
                 inputTestModeRef.current.focus()
-            }
+            } */
 
             // Click beyond the current word object closes the edition mode
             if (wordFromDbRef.current && !wordFromDbRef.current.contains(event.target) && !editBttnRef.current.ref.contains(event.target)) {

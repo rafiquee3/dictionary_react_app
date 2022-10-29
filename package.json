@@ -33,6 +33,7 @@
   "dependencies": {
     "autoprefixer": "^10.4.12",
     "axios": "^0.27.2",
+    "html2pdf.js": "^0.10.1",
     "postcss": "^8.4.16",
     "postcss-loader": "^7.0.1",
     "postcss-preset-env": "^7.8.2",

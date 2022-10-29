@@ -1,4 +1,4 @@
-import React, { useEffect, forwardRef, useContext, useState } from "react";
+import React, { useEffect, forwardRef, useContext, useState, useRef, useCallback } from "react";
 import styled from "styled-components";
 import { StoreContext } from "../../../../store/StoreProvider";
 import { increaseLvlDifficulty, decreaseLvlDifficulty } from "../../../../helpers/dbCallFunctions";
@@ -63,6 +63,11 @@ const InputTest = ({
         }
     }
 
+    useEffect(() => {
+        console.log(refExample)
+       
+    }, [])
+
     const mask = [];
     tempTranslation.split('').map(value => mask.push('c'));
     
@@ -73,9 +78,9 @@ const InputTest = ({
                 mask={ mask.join('') } 
                 formatChars={ {'c': '[a-z\']'} } 
                 value={ tempTranslation } 
-                onChange={ inputHandler }
-                ref={ref} 
-                autoFocus       
+                onChange={ inputHandler } 
+                autoFocus
+                ref={ref}
             >
             </InputMask>
         </Input>

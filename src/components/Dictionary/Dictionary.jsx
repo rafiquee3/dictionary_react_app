@@ -42,7 +42,7 @@ const Dictionary = () => {
     return (
         <>  
             <LoadPageStatus><LoadProgress width={loadProgress}/></LoadPageStatus>
-            <HelpBar />
+            <HelpBar/>
             <Paginator howMany={showSize} words={words}/>
         </>
     )

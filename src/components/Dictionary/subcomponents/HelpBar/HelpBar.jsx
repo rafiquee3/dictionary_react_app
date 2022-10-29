@@ -1,23 +1,26 @@
 import React, { useContext } from 'react';
-import styled, { css } from 'styled-components';
+import { renderToStaticMarkup } from "react-dom/server"
+import styled from 'styled-components';
 import { StoreContext } from '../../../../store/StoreProvider';
+import ExportToPdf from '../ExportToPdf/ExportToPdf';
+import html2pdf from 'html2pdf.js';
 
 const Button = styled.button`
-background: ${props => props.bgcolor || 'white'};
-border-radius: 4px;
-border-color: #584894;
-padding: 15px;
-color: black;
+    background: ${props => props.bgcolor || 'white'};
+    border-radius: 4px;
+    border-color: #584894;
+    padding: 15px;
+    color: black;
 `
 
 const Wrapper = styled.div`
-display: flex;
-background: white;
-border-radius: 4px;
-border: 1px solid gray; 
-padding: 15px;
-width: 500px;
-height: 50px;
+    display: flex;
+    background: white;
+    border-radius: 4px;
+    border: 1px solid gray; 
+    padding: 15px;
+    width: 500px;
+    height: 50px;
 `
 
 const HelpBar = () => {
@@ -30,6 +33,7 @@ const HelpBar = () => {
         setSortByAz, 
         sortByDifficultyLvl, 
         setSortByDifficultyLvl,
+        words,
     } = useContext(StoreContext);
 
     const inverseMode = () => setTestInverseMode(prev => !prev);
@@ -49,6 +53,19 @@ const HelpBar = () => {
         setSortByAz(true);
     }
 
+    const exportToPdf = () => {
+        const opt = {
+            margin:       1,
+            filename:     'dictionary_words.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2 },
+            jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+
+        const staticElement = renderToStaticMarkup(<ExportToPdf words={words}/>)
+        html2pdf(staticElement, opt);
+    }
+
     return (
         <>
             { testMode ?
@@ -62,6 +79,7 @@ const HelpBar = () => {
                 <Button onClick={() => sortByDiffLvl()}>difficulty lvl</Button>
                 <Button onClick={() => sort_ByLastAdded()}>last added</Button>
                 <Button onClick={() => sort_ByAz()}>A - Z</Button>
+                <Button onClick={() => exportToPdf()}>To Pdf</Button>
             </Wrapper>
             }
         </>

@@ -55,9 +55,11 @@ const {
             `/words/${user}/${id}`,
             {}
         );
+
         if(status === 200) {
             getNewListOfWords(collectionName);
         }
+
         if(data.message) {
             setEditedWordErrors(data.message);
         }
@@ -69,10 +71,12 @@ const {
         const {data, status} = await request.put(
             `/words/${collectionName}/${id}/${word}/${translation}`, {}
         );
+
         if(status === 200) {
             getNewListOfWords(collectionName);
             setEditMode(false);
         }
+
         if(data.message) {
             setEditMode(true);
             setEditedWordErrors(data.message);
@@ -81,7 +85,6 @@ const {
     }
 
     const editWord = (event, _id) => {
-  
         setId(_id);
         setEditMode(true);
 

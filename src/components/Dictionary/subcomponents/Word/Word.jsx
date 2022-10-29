@@ -1,8 +1,8 @@
-import React, { useContext, useEffect, useState, useRef } from "react";
+import React, {useContext, useEffect, useState, useRef} from "react";
 import styled from 'styled-components';
 import WordFunctions from "../WordFunctions/WordFunctions";
 import InputTest from "./InputTest";
-import { StoreContext } from "../../../../store/StoreProvider";
+import {StoreContext} from "../../../../store/StoreProvider";
 import OutSideClickHandler from "./OutSideClickHandler";
 import request from "../../../../helpers/request"
 
@@ -30,7 +30,7 @@ const WordFromDb = styled.div`
 
     .translation {
         letter-spacing: ${props => props.spacing}
-    }
+}
 `
 const Input = styled.input`
     background: #9584DB;
@@ -76,7 +76,7 @@ const Hint = styled.div`
     color: #320306;
 `
 
-const Word = ({ _id, display, initial, translation, word }) => {
+const Word = ({_id, display, initial, translation, word}) => {
     
     const {
         id,
@@ -95,17 +95,17 @@ const Word = ({ _id, display, initial, translation, word }) => {
     } = useContext(StoreContext);
 
     const generateTranslationFromDb = (translation) => {
-        if (testMode) {  
+        if (testMode) { 
             const result = translation
             .split('')
             .map(lettre => lettre = '_')
             .join('');
 
             return result;
-        }
+    }
 
         return translation;
-    }
+}
 
     const [initialWordValue, setInitialWordValue] = useState(word);
     const [initialTranslationValue, setInitialTranslationValue] = useState(translation);
@@ -154,38 +154,38 @@ const Word = ({ _id, display, initial, translation, word }) => {
         setTranslationState(translation)
     }
 
-    const handleClickEvent = (event, id, word, translation) => {   
+    const handleClickEvent = (event, id, word, translation) => {  
         switch (event.detail) {
-                // Test mode
-                case 1: {
-                    if (testMode && !oneClickFnCalled) {
-                        setOutSideClickListener(true)
-                        setOneClickFnCalled(true);
-                        setEditModeInTestMode(true);
-                        break;
-                    }
-
+            // Test mode
+            case 1: {
+                if (testMode && !oneClickFnCalled) {
+                    setOutSideClickListener(true)
+                    setOneClickFnCalled(true);
+                    setEditModeInTestMode(true);
                     break;
-                } 
-                // Edit mode
-                case 2: {
-                    if (!inputEditModeRef.current) {
-                        if (editedWordErrors && !isEditBttnClicked) setEditedWordErrors('');
+                }
 
-                        if (!testMode) {
-                            setOutSideClickListener(true)
-                            setId(id);
-                            setEditMode(true);
-                            setInitialValue(word, translation); 
-                            setIsEditBttnClicked(true);
-                            break;
-                        }
+                break;
+            } 
+            // Edit mode
+            case 2: {
+                if (!inputEditModeRef.current) {
+                    if (editedWordErrors && !isEditBttnClicked) setEditedWordErrors('');
 
+                    if (!testMode) {
+                        setOutSideClickListener(true)
+                        setId(id);
+                        setEditMode(true);
+                        setInitialValue(word, translation); 
+                        setIsEditBttnClicked(true);
                         break;
                     }
-                }     
-          }
-    }
+
+                break;
+                }
+            }     
+        }
+    }   
     
     useEffect(() => {
         setTempTranslation(translation);
@@ -199,7 +199,7 @@ const Word = ({ _id, display, initial, translation, word }) => {
                 setBorderColor(FOUND_WORD_COLOR);
                 setOutSideClickListener(true);                
 
-            }else if( searchValue.word !== word) {
+        } else if ( searchValue.word !== word) {
                 setBorderColor(DEFAULT_WORD_COLOR); 
             }
         }
@@ -207,10 +207,10 @@ const Word = ({ _id, display, initial, translation, word }) => {
 
     // When the difficulty level changes make a word update
     useEffect(() => {
-      if (testMode) {
-        let collectionName = user;
-        getNewListOfWords(collectionName);
-      }
+        if (testMode) {
+            let collectionName = user;
+            getNewListOfWords(collectionName);
+        }
     }, [editModeInTestMode])
 
     useEffect(() => {
@@ -219,12 +219,17 @@ const Word = ({ _id, display, initial, translation, word }) => {
                 setInitialWordValue(initial.word);
                 setInitialTranslationValue(initial.translation);
                 setTempTranslation(generateTranslationFromDb(initial.translation));
-            } else {
+        } else {
                 setInitialWordValue(initial.translation);
                 setInitialTranslationValue(initial.word);
                 setTempTranslation(generateTranslationFromDb(initial.word));
         }
     }}, [testMode, testInverseMode])
+
+    useEffect(() => {
+        if(wordFromDbRef.current)
+        wordFromDbRef.current.focus()
+    }, [])
 
     const errorWord = typeof editedWordErrors !== 'string' ? editedWordErrors
     .filter(message => message.field === "word")
@@ -235,77 +240,77 @@ const Word = ({ _id, display, initial, translation, word }) => {
     .map(message => <p key={message.error}>{message.field}: {message.error}</p>) : '';
 
     const otherErrors = typeof editedWordErrors !== 'string' ? '' : editedWordErrors;
-
+    
     return (
         <>  
-            { id === _id && editMode ?
+            {id === _id && editMode ?
            
             <Wrapper display={display}>
                 <div>    
                     <WordFromDb 
-                        ref={ wordFromDbRef }
+                        ref={wordFromDbRef}
                         onClick={(event) => handleClickEvent(event, _id, word, translation)}
-                        data-border={ borderColor } 
+                        data-border={borderColor} 
                     >      
-                        <Input value={ wordState } onChange={wordHandler} ref={ inputEditModeRef }  />
-                        <Input value={ translationState } onChange={translationHandler} />
+                        <Input value={wordState} onChange={wordHandler} ref={inputEditModeRef}  />
+                        <Input value={translationState} onChange={translationHandler} />
                     </WordFromDb>
-                    <Error>{ errorWord }{ errorTranslation }{ otherErrors }</Error>
+                    <Error>{errorWord}{errorTranslation}{otherErrors}</Error>
                 </div>   
                 <WordFunctions 
-                    word={ wordState } 
-                    translation={ translationState } 
-                    initialValue={ { word, translation } }
-                    editMode={ editMode }
-                    setEditMode={ setEditMode } 
-                    setInitialValue={ setInitialValue } 
-                    setOutSideClickListener={ setOutSideClickListener }
+                    word={wordState} 
+                    translation={translationState} 
+                    initialValue={{word, translation}}
+                    editMode={editMode}
+                    setEditMode={setEditMode} 
+                    setInitialValue={setInitialValue} 
+                    setOutSideClickListener={setOutSideClickListener}
                     _id={_id} 
-                    ref={ editBttnRef }
+                    ref={editBttnRef}
                 /> 
             </Wrapper>
                 
             : testMode ?
 
-            <Wrapper display={ display }>
+            <Wrapper display={display}>
                 <div>
                     <WordFromDb                
-                        ref={ insideWordClickRef } 
-                        onClick={ (event) => handleClickEvent(event, _id, word, translation) } 
-                        width={ testMode ? "800px" : '' } 
-                        spacing={ testMode ? '10px' : '' }
-                        borderColor={ borderColor }
+                        ref={insideWordClickRef} 
+                        onClick={(event) => handleClickEvent(event, _id, word, translation)} 
+                        width={testMode ? "800px" : ''} 
+                        spacing={testMode ? '10px' : ''}
+                        borderColor={borderColor}
                         >
 
-                            { editModeInTestMode ? 
+                            {editModeInTestMode ? 
 
                             <div>
-                                { initialWordValue} 
+                                {initialWordValue} 
                                 <span className="translation" >
                                     &nbsp;-&nbsp;
                                     <InputTest 
-                                        setTempTranslation={ setTempTranslation } 
-                                        tempTranslation={ tempTranslation } 
-                                        initialTranslation={ initialTranslationValue }
-                                        setBorderColor={ setBorderColor }
-                                        ref={ inputTestModeRef }
-                                        _id = { _id }
+                                        setTempTranslation={setTempTranslation} 
+                                        tempTranslation={tempTranslation} 
+                                        initialTranslation={initialTranslationValue}
+                                        setBorderColor={setBorderColor}
+                                        ref={inputEditModeRef}
+                                        _id = {_id}
                                     />
                                 </span>
-                                <Button onClick={ () => setShowHint((prev) => !prev) }>Help</Button>
+                                <Button onClick={() => setShowHint((prev) => !prev)}>Help</Button>
                             </div>
                             
                             :
 
                             <div>
-                                { initialWordValue } 
+                                {initialWordValue} 
                                 <span className="translation" >
-                                    &nbsp;-&nbsp;{ tempTranslation }
+                                    &nbsp;-&nbsp;{tempTranslation}
                                 </span>
                             </div>
-                            }      
+                        }      
                     </WordFromDb> 
-                    { showHint &&  <Hint>{ initialTranslationValue }</Hint>}
+                    {showHint &&  <Hint>{initialTranslationValue}</Hint>}
                    
                 </div>       
             </Wrapper>
@@ -315,48 +320,48 @@ const Word = ({ _id, display, initial, translation, word }) => {
             <Wrapper display={display}>
                 <div>
                     <WordFromDb       
-                        ref={ insideWordClickRef } 
+                        ref={insideWordClickRef} 
                         onClick={(event) => handleClickEvent(event, _id, word, translation)} 
-                        borderColor={ borderColor }
-                        data-border={ borderColor }
+                        borderColor={borderColor}
+                        data-border={borderColor}
                     >
                             {word} 
                             <span className="translation" >
-                                &nbsp;-&nbsp;{ generateTranslationFromDb(translation) }
+                                &nbsp;-&nbsp;{generateTranslationFromDb(translation)}
                             </span>
                     </WordFromDb> 
                 </div>
                 <WordFunctions 
-                    word={ word } 
-                    translation={ translation } 
-                    initialValue={ {word, translation} } 
-                    editMode={ editMode }
-                    setEditMode={ setEditMode } 
-                    setInitialValue={ setInitialValue } 
-                    setOutSideClickListener={ setOutSideClickListener }
-                    _id={ _id } 
-                    ref={ editBttnRef }
+                    word={word} 
+                    translation={translation} 
+                    initialValue={{word, translation}} 
+                    editMode={editMode}
+                    setEditMode={setEditMode} 
+                    setInitialValue={setInitialValue} 
+                    setOutSideClickListener={setOutSideClickListener}
+                    _id={_id} 
+                    ref={editBttnRef}
                 /> 
             </Wrapper>
-            }
-            { outSideClickListener && 
+        }
+            {outSideClickListener && 
 
             <OutSideClickHandler 
-                wordFromDbRef={ wordFromDbRef } 
-                editBttnRef={ editBttnRef }
-                inputTestModeRef={ inputTestModeRef }  
-                insideWordClickRef={ insideWordClickRef }
-                setBorderColor={ setBorderColor }
-                colorPalette={ {DEFAULT_WORD_COLOR, FOUND_WORD_COLOR} }
-                editMode={ editMode } 
-                setEditMode={ setEditMode }
-                setEditModeInTestMode={ setEditModeInTestMode }
-                setOneClickFnCalled={ setOneClickFnCalled }
-                setOutSideClickListener={ setOutSideClickListener }
-                showHint={ showHint } 
-                setShowHint={ setShowHint }
+                wordFromDbRef={wordFromDbRef} 
+                editBttnRef={editBttnRef}
+                inputTestModeRef={inputTestModeRef}  
+                insideWordClickRef={insideWordClickRef}
+                setBorderColor={setBorderColor}
+                colorPalette={{DEFAULT_WORD_COLOR, FOUND_WORD_COLOR}}
+                editMode={editMode} 
+                setEditMode={setEditMode}
+                setEditModeInTestMode={setEditModeInTestMode}
+                setOneClickFnCalled={setOneClickFnCalled}
+                setOutSideClickListener={setOutSideClickListener}
+                showHint={showHint} 
+                setShowHint={setShowHint}
             /> 
-            }
+        }
         </>
     )
 }
