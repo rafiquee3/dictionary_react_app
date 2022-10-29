@@ -39,18 +39,22 @@ const Header = () => {
         showSearch, 
         setShowSearch,
         showAddWord, 
-        setShowAddWord, 
+        setShowAddWord,
+        words, 
     } = useContext(StoreContext);
     
     const handleOnClick = () => {
         setTestMode(!testMode);
     }
+
     const handleMemoClick = () => {
         setShowMemoMode(!showMemoMode);
     }
+
     const handleSearchClick = () => {
         setShowSearch(!showSearch);
     }
+
     const handleNewWordClick = () => {
         setShowAddWord(!showAddWord);
     }
@@ -65,10 +69,11 @@ const Header = () => {
                 { user && !testMode && <AddWordForm/> }
                 { user && !testMode && <Button onClick={ () => handleMemoClick() }>Memo mode</Button> }
                 { user && showSearch && <SearchForm /> }
-                { user && showMemoMode && <MemoMode /> }
+                { user && words.length ? true : false && showMemoMode && <MemoMode /> }
                 <LoginForm />
             </Wrapper>
         </>
     )
 }
+
 export default Header;

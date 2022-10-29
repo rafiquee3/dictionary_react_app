@@ -63,7 +63,9 @@ const HelpBar = () => {
         };
 
         const staticElement = renderToStaticMarkup(<ExportToPdf words={words}/>)
-        html2pdf(staticElement, opt);
+        if (words.length) {
+            html2pdf(staticElement, opt);
+        }
     }
 
     return (

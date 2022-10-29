@@ -8,7 +8,6 @@ import request from "../../../../helpers/request"
 
 // word detail mode with addnotation feature
 // click wordDbRef focus on input
-// print all word to pdf
 
 const WordFromDb = styled.div`
     display: flex;
@@ -102,10 +101,10 @@ const Word = ({_id, display, initial, translation, word}) => {
             .join('');
 
             return result;
-    }
+        }
 
         return translation;
-}
+    }
 
     const [initialWordValue, setInitialWordValue] = useState(word);
     const [initialTranslationValue, setInitialTranslationValue] = useState(translation);

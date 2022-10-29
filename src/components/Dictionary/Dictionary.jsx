@@ -10,6 +10,7 @@ const LoadPageStatus = styled.div`
     width: 100%;
     height: 10px;
 `
+
 const LoadProgress = styled.div`
     display: flex;
     background: #BE1622;

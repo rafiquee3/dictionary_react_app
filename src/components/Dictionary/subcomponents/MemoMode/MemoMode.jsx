@@ -84,7 +84,6 @@ const MemoMode = () => {
         }  
     }, [sortByAz, sortByDifficultyLvl]); 
     
-
     return (
         <>
             <Modal  isShowing={showMemoMode}>

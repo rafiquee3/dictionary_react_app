@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState, useRef, forwardRef, useImperativeHandle} from "react";
+import React, { useContext, useRef, forwardRef, useImperativeHandle} from "react";
 import request from '../../../../helpers/request'
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { StoreContext } from "../../../../store/StoreProvider";
 
 const Button = styled.button`
