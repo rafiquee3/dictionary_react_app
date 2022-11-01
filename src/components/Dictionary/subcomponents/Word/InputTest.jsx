@@ -63,11 +63,6 @@ const InputTest = ({
         }
     }
 
-    useEffect(() => {
-        console.log(refExample)
-       
-    }, [])
-
     const mask = [];
     tempTranslation.split('').map(value => mask.push('c'));
     

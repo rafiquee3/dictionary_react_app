@@ -59,6 +59,8 @@ const Header = () => {
         setShowAddWord(!showAddWord);
     }
 
+    const areWords = words.length > 0 ? Boolean(true) : Boolean(false);
+
     return (
         <>
             <Wrapper>
@@ -69,7 +71,7 @@ const Header = () => {
                 { user && !testMode && <AddWordForm/> }
                 { user && !testMode && <Button onClick={ () => handleMemoClick() }>Memo mode</Button> }
                 { user && showSearch && <SearchForm /> }
-                { user && words.length ? true : false && showMemoMode && <MemoMode /> }
+                { user && areWords && showMemoMode && <MemoMode /> }
                 <LoginForm />
             </Wrapper>
         </>

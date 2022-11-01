@@ -62,7 +62,7 @@ const HelpBar = () => {
             jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
         };
 
-        const staticElement = renderToStaticMarkup(<ExportToPdf words={words}/>)
+        const staticElement = renderToStaticMarkup(<ExportToPdf words={words} sort={{sortByAz, sortByDifficultyLvl}}/>)
         if (words.length) {
             html2pdf(staticElement, opt);
         }
