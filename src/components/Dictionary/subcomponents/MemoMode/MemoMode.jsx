@@ -1,7 +1,6 @@
 import React, {useContext, useState, useEffect, useRef} from "react";
 import Modal from "../../../Modal/Modal";
 import MemoItem from "./MemoItem";
-import useModal from "../../../Modal/useModal";
 import { StoreContext } from "../../../../store/StoreProvider";
 import styled from 'styled-components';
 

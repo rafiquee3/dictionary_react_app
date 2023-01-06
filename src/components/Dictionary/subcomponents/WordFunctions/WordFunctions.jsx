@@ -23,17 +23,17 @@ const WordFunctions = ({
             
 const editBttnRef = useRef();
 
-const {
-        user,
-        setWords,
-        id,
-        setId,
-        editedWordErrors,
-        setEditedWordErrors,
-        isEditBttnClicked, 
-        setIsEditBttnClicked,
+    const {
+            user,
+            setWords,
+            id,
+            setId,
+            editedWordErrors,
+            setEditedWordErrors,
+            isEditBttnClicked, 
+            setIsEditBttnClicked,
 
-    } = useContext(StoreContext);
+        } = useContext(StoreContext);
 
     const getNewListOfWords = async (collectionName) => {
         const {data, status} = await request.post(

@@ -9,8 +9,7 @@ const WordWrapper = styled.div`
     background: gray;
 `
 
-// eslint-disable-next-line react/prop-types
-const Paginator = ( { howMany, words} ) => {
+const Paginator = ({howMany, words}) => {
     const {
         page, 
         setPage, 
@@ -22,7 +21,6 @@ const Paginator = ( { howMany, words} ) => {
 
     } = useContext(StoreContext);
 
-    // eslint-disable-next-line react/prop-types
     const wordsLength = words.length;
     const numberOfPages = Math.ceil(wordsLength / howMany);
     let wordsArr = [...words];
@@ -31,7 +29,6 @@ const Paginator = ( { howMany, words} ) => {
     let searchPage = false;
     let searchNotFound = false;
     
-    // Generate new array [start, ... , end]
     const range = (start, end) => {
         return Array(end - start + 1).fill().map((_, i) => start + i)
     }
@@ -103,7 +100,7 @@ const Paginator = ( { howMany, words} ) => {
     }
 
     const clickedLinkFn = (page) => {
-        if( page < 1) page = 0;
+        if (page < 1) page = 0;
         if (page > numberOfPages - 1) page -= 1;
     
         setPage(page);
@@ -113,8 +110,7 @@ const Paginator = ( { howMany, words} ) => {
         if (prevPage) {
             setPage(page - 1);
             prevPage = false;
-        }
-        
+        }    
     }, [numberOfPages])
     
     useEffect(() => {
@@ -125,8 +121,7 @@ const Paginator = ( { howMany, words} ) => {
         }
 
         if (searchNotFound) {
-            setSearchMode(false);
-            
+            setSearchMode(false);   
         }
     }, [searchMode])
 

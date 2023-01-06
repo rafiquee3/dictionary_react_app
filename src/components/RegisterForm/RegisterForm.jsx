@@ -74,7 +74,6 @@ const RegisterForm = () => {
     return (
         <>
             <Form onSubmit={toggleSubmit} method="post">
-                
                 <Input type="text" placeholder="Username" value={login} onChange={loginHandler}/>
                     <Error>
                         {errorLogin}

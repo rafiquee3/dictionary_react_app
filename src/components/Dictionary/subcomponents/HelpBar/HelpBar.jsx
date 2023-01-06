@@ -26,7 +26,6 @@ const Wrapper = styled.div`
 const HelpBar = () => {
     const { 
         testMode, 
-        editMode, 
         testInverseMode, 
         setTestInverseMode,
         sortByAz,

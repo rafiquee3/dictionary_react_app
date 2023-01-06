@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { StoreContext } from "../../store/StoreProvider";
 
 const Link = styled.div`
@@ -35,7 +35,7 @@ const Link = styled.div`
 `
 
 const LinkPage = ({ clickedLinkFn, numberOfPages }) => {
-    const {page, setPage} = useContext(StoreContext);
+    const {page} = useContext(StoreContext);
 
     const generateElements = () => {
         let reactElements = [];
@@ -77,6 +77,6 @@ const LinkPage = ({ clickedLinkFn, numberOfPages }) => {
             <Link>{generateLinks}</Link>
         </>
     )
-
 }
+
 export default LinkPage;
